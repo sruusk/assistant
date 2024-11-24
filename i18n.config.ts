@@ -22,6 +22,7 @@ export default defineI18nConfig(() => ({
         files: 'Uploaded files',
         noFiles : 'No files uploaded',
         resetConversation: 'Clear conversation',
+        markdown: 'Markdown parser',
         step: {
           creating: 'Creating assistant...',
           updating: 'Updating assistant...',

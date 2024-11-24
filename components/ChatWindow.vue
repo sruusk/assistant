@@ -2,7 +2,10 @@
   <UCard class="h-full flex flex-col" :ui="{ body: 'grow overflow-y-hidden' }">
     <div class="flex flex-col-reverse items-center justify-start h-full w-full overflow-y-scroll gap-5 px-2">
       <ChatBubble :stream="messageStore.stream"/>
-      <ChatBubble v-for="message in messageStore.messages" :key="message.id" :message="message"/>
+      <template v-for="message in messageStore.messages" :key="message.id">
+        <ChatBubble :message="message" :markdown-enabled="menuItems[0][0].checked"/>
+        <USeparator orientation="horizontal" class="w-full capitalize">{{ message.role }}</USeparator>
+      </template>
       <USkeleton v-if="messageStore.loading" class="w-full h-10" v-for="i in 5" :key="i"/>
     </div>
     <template #footer>
@@ -20,21 +23,38 @@
                    :ui="{ base: ['resize-none rounded-r-none'] }"
                    class="w-full"
         />
-        <UButton @click="sendMessage" icon="material-symbols:send-rounded"/>
-        <UTooltip :delay-duration="0" :text="$t('dashboard.resetConversation')">
-          <UButton icon="material-symbols-light:directory-sync" @click="clearConversation"/>
-        </UTooltip>
+        <UButton @click="sendMessage" icon="material-symbols:send-rounded" variant="outline" color="neutral"/>
+        <UDropdownMenu :items="menuItems">
+          <UButton icon="i-lucide-menu" color="neutral" variant="outline" />
+        </UDropdownMenu>
       </UButtonGroup>
     </template>
   </UCard>
 </template>
 
 <script lang="ts">
+
 export default defineNuxtComponent({
   name: "ChatWindow",
   data() {
     return {
       message: "",
+      menuItems: [
+        [
+          {
+            label: this.$t('dashboard.markdown'),
+            icon: "material-symbols:markdown",
+            checked: true,
+            onSelect: () => this.menuItems[0][0].checked = !this.menuItems[0][0].checked,
+            type: "checkbox",
+          },
+          {
+            label: this.$t('dashboard.resetConversation'),
+            icon: "material-symbols-light:directory-sync",
+            onSelect: this.clearConversation,
+          }
+        ]
+      ]
     };
   },
   async setup() {

@@ -1,10 +1,15 @@
 <template>
   <div class="w-full">
     <template v-if="parsedMarkdownLatex">
-      <div v-html="parsedMarkdownLatex" class="w-full text-wrap whitespace-break-spaces"/>
+      <div v-html="parsedMarkdownLatex" class="w-full text-wrap whitespace-break-spaces markdown"/>
     </template>
-    <template v-else>
-      {{ messageText }}
+    <template v-else v-for="line in messageText.split('\n')" :key="line">
+      <p v-if="line.length"
+         class="w-full text-wrap whitespace-break-spaces"
+      >
+        {{ line }}
+      </p>
+      <br v-else/>
     </template>
   </div>
 </template>
@@ -28,10 +33,14 @@ export default defineNuxtComponent({
       type: ReadableStream,
       required: false,
     },
+    markdownEnabled: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
-      messageText: this.message?.content?.map((content: any) => content.text.value).join(' ') ?? '',
+      messageText: this.message?.content?.map((content: any) => content.text.value).join('\n') ?? '',
       streaming: false,
     };
   },
@@ -46,12 +55,11 @@ export default defineNuxtComponent({
   },
   computed: {
     parsedMarkdownLatex() {
-      if(!this.message) return undefined;
-      console.log('parsing');
+      if(!this.message || !this.markdownEnabled) return undefined;
       const message = this.message.content
         .map((content: any) => content.text.value)
         .join(' ')
-        .replace(/\\\[\n\s*(.+?)\n\s+?\\\]\n?/g, `\$\$ $1 \$\$`)
+        .replace(/\\\[\n(?:\s+)?(.+?)\n(?:\s+)?\\\]/g, `\$\$ $1 \$\$`)
         .replace(/\\\(\s*(.+?)\s*\\\)/g, `\$\$ $1 \$\$`);
       console.log(message);
       return unified()
@@ -97,13 +105,26 @@ export default defineNuxtComponent({
 </script>
 
 <style scoped>
-:deep(.katex-html) {
+.markdown :deep(.katex-html) {
   display: none;
 }
-:deep(ul), :deep(ol) {
-  line-height: 0;
+.markdown :deep(mfrac) {
+  padding: 0 3px;
 }
-:deep(li) {
-  line-height: 1.5;
+.markdown :deep(mrow > *) {
+  margin: 0 1px;
+}
+.markdown :deep(ul), .markdown :deep(ol) {
+  line-height: 0;
+  margin: -0.7em 0 -0.3em 0;
+}
+.markdown :deep(li), .markdown :deep(p) {
+  line-height: 1.2;
+}
+.markdown :deep(p) {
+  margin: -0.7em 0;
+}
+.markdown :deep(p:has(> span)) {
+  margin-bottom: 0;
 }
 </style>
