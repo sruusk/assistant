@@ -1,16 +1,8 @@
-export default defineEventHandler(async (event) => {
-  // TODO: Return the list of assistants for the current user
-  const user = event.context.logtoUser;
-  if(!user) {
-    setResponseStatus(event, 401);
-    return { error: 'Unauthorized' };
-  }
+export default defineAuthenticatedHandler(async (event) => {
+  const data = await event.context.storage.getItem(`user:${event.context.logtoUser.sub}:assistants`);
 
-  return [
+  return data || [
     'asst_EasDLGndoWSCqptrm0WgTBxv',
     'asst_EGNCluaDVtYDIIBsQFOPUnJK'
   ];
-
-  const data = await useStorage('user').getItem(`${user.sub}:assistants`);
-  return data || [];
 });

@@ -1,9 +1,5 @@
-export default defineEventHandler(async (event) => {
-  const user = event.context.logtoUser;
-  if (!user) {
-    setResponseStatus(event, 401);
-    return {error: 'Unauthorized'};
-  }
-
-  return event.context.openai.beta.vectorStores.create();
+export default defineAuthenticatedHandler(async (event) => {
+  return event.context.openai.beta.vectorStores.create({
+    name: `user:${event.context.logtoUser.sub}:store:${Date.now()}`,
+  });
 });

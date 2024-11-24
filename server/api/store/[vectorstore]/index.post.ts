@@ -1,21 +1,14 @@
-export default defineEventHandler(async (event) => {
-  const user = event.context.logtoUser;
-  if (!user) {
-    setResponseStatus(event, 401);
-    return {error: 'Unauthorized'};
-  }
-
+export default defineAuthenticatedHandler(async (event) => {
   const storeId = getRouterParam(event, 'vectorstore');
   if(!storeId) {
     setResponseStatus(event, 400);
     return;
   }
 
-  const body = await readBody(event);
+  const body = await readFormData(event);
 
-  const file = await event.context.openai.beta.vectorStores.files.uploadAndPoll(storeId, body);
+  // Read the file from the request to upload
+  const upload = body.get('file');
 
-  console.log(file);
-
-  return file;
+  return await event.context.openai.beta.vectorStores.files.uploadAndPoll(storeId, upload, { timeout: 40000 }); // 40 seconds
 });

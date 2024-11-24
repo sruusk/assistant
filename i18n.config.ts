@@ -19,6 +19,15 @@ export default defineI18nConfig(() => ({
         missingFields: 'Missing fields, name and instructions are required',
         message: 'Message',
         messagePlaceholder: 'Type your message',
+        files: 'Uploaded files',
+        noFiles : 'No files uploaded',
+        resetConversation: 'Clear conversation',
+        step: {
+          creating: 'Creating assistant...',
+          updating: 'Updating assistant...',
+          uploading: 'Uploading files...',
+          finishing: 'Finishing...',
+        }
       },
       logout: 'Logout',
     }

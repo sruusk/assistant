@@ -9,17 +9,21 @@ export const useUserStore = defineStore('user', {
   getters: {
     activeAssistant(state) {
       return state.assistants.find(asst => asst.id === state.activeAssistantId);
+    },
+    getAssistantById: (state) => (id: string) => {
+      return state.assistants.find(asst => asst.id === id);
     }
   },
   actions: {
     async getAssistants() {
-      this.assistants = [];
       const data = await $fetch('/api/assistants');
       if(Array.isArray(data)) {
+        const promises = [];
         for(const asst of data) {
-          this.assistants.push(await $fetch(`/api/assistants/${asst}`));
+          promises.push($fetch(`/api/assistants/${asst}`));
         }
+        this.assistants = await Promise.all(promises);
       }
-    }
+    },
   }
 })

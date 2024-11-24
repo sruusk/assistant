@@ -51,4 +51,12 @@ export default defineNuxtConfig({
     dbName: 'assistant',
     openAiKey: '',
   },
+  nitro: {
+    storage: {
+      db: {
+        driver: 'fs',
+        base: './.storage',
+      }
+    }
+  }
 })
