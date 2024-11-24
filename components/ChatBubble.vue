@@ -1,10 +1,22 @@
 <template>
-  <div>
-    {{ messageText }}
+  <div class="w-full">
+    <template v-if="parsedMarkdownLatex">
+      <div v-html="parsedMarkdownLatex" class="w-full text-wrap whitespace-break-spaces"/>
+    </template>
+    <template v-else>
+      {{ messageText }}
+    </template>
   </div>
 </template>
 
 <script lang="ts">
+import rehypeKatex from 'rehype-katex'
+import rehypeStringify from 'rehype-stringify'
+import remarkMath from 'remark-math'
+import remarkParse from 'remark-parse'
+import remarkRehype from 'remark-rehype'
+import {unified} from 'unified'
+
 export default defineNuxtComponent({
   name: "ChatBubble",
   props: {
@@ -31,6 +43,25 @@ export default defineNuxtComponent({
   },
   mounted() {
     this.fetchStream();
+  },
+  computed: {
+    parsedMarkdownLatex() {
+      if(!this.message) return undefined;
+      console.log('parsing');
+      const message = this.message.content
+        .map((content: any) => content.text.value)
+        .join(' ')
+        .replace(/\\\[\n\s*(.+?)\n\s+?\\\]\n?/g, `\$\$ $1 \$\$`)
+        .replace(/\\\(\s*(.+?)\s*\\\)/g, `\$\$ $1 \$\$`);
+      console.log(message);
+      return unified()
+        .use(remarkParse)
+        .use(remarkMath)
+        .use(remarkRehype)
+        .use(rehypeKatex)
+        .use(rehypeStringify)
+        .processSync(message);
+    }
   },
   methods: {
     async fetchStream() {
@@ -66,5 +97,13 @@ export default defineNuxtComponent({
 </script>
 
 <style scoped>
-
+:deep(.katex-html) {
+  display: none;
+}
+:deep(ul), :deep(ol) {
+  line-height: 0;
+}
+:deep(li) {
+  line-height: 1.5;
+}
 </style>
