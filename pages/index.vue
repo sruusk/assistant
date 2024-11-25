@@ -3,7 +3,7 @@
     <div class="flex flex-col items-center px-20 py-16">
       <h1 class="text-4xl font-bold">{{ $t("landing.title") }}</h1>
       <p class="mt-4 text-center">{{ $t("landing.description") }}</p>
-      <a class="my-8 relative group" href="/login">
+      <a class="my-8 relative group" href="/sign-in">
         <div
           class="contain-strict absolute -inset-1 rounded-full bg-gradient-to-r from-red-600 to-violet-600 blur opacity-25 group-hover:opacity-100 transition duration-1000 group-hover:duration-300"
         >
