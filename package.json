@@ -16,6 +16,7 @@
     "@nuxtjs/i18n": "^9.1.0",
     "@nuxtjs/mdc": "^0.9.5",
     "@pinia/nuxt": "^0.7.0",
+    "crypto": "^1.0.1",
     "mongodb": "^6.11.0",
     "nuxt": "^3.14.1592",
     "nuxt-umami": "^3.0.2",
