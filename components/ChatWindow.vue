@@ -1,6 +1,6 @@
 <template>
   <UCard class="h-full flex flex-col" :ui="{ body: 'grow overflow-y-hidden' }">
-    <div class="flex flex-col-reverse items-center justify-start h-full w-full overflow-y-scroll gap-5 px-2">
+    <div class="flex flex-col-reverse items-center justify-start h-full overflow-y-auto gap-5 px-2">
       <ChatBubble :stream="messageStore.stream"/>
       <template v-for="message in messageStore.messages" :key="message.id">
         <ChatBubble :message="message" :renderer="renderer"/>
@@ -50,14 +50,14 @@ export default defineNuxtComponent({
             onSelect: () => this.setRenderer("markdown"),
             type: "checkbox",
           },
-          {
-            label: this.$t('dashboard.latex'),
-            icon: "file-icons:latex",
-            checked: false,
-            val: "latex",
-            onSelect: () => this.setRenderer("latex"),
-            type: "checkbox",
-          },
+          // {
+          //   label: this.$t('dashboard.latex'),
+          //   icon: "file-icons:latex",
+          //   checked: false,
+          //   val: "latex",
+          //   onSelect: () => this.setRenderer("latex"),
+          //   type: "checkbox",
+          // },
           {
             label: this.$t('dashboard.resetConversation'),
             icon: "material-symbols-light:directory-sync",

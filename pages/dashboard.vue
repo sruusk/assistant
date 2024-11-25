@@ -1,7 +1,7 @@
 <template>
-  <div class="flex flex-row items-start justify-start h-dvh">
+  <div class="flex flex-row items-start justify-start h-dvh max-w-dvw relative contain-content">
     <ColumnNavigation/>
-    <div class="h-full w-full">
+    <div class="h-full grow">
       <DevOnly v-if="false">
         <ul v-if="Boolean(user)" class="fixed top-0 right-0 backdrop-blur-xl">
           <li v-for="(value, key) in user"><b>{{ key }}:</b> {{ value }}</li>

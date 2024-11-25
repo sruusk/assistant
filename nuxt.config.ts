@@ -67,5 +67,22 @@ export default defineNuxtConfig({
         base: './.storage',
       }
     }
+  },
+  mdc: {
+    highlight: {
+      theme: 'github-dark',
+      langs: ['js','jsx','json','ts','tsx','vue','css','html','bash','md','mdc','yaml', 'asm', 'latex', 'c', 'c++', 'c#'],
+      wrapperStyle: true
+    },
+    components: {
+      prose: false, // Add predefined map to render Prose Components instead of HTML tags, like p, ul, code
+      map: {
+        // This map will be used in `<MDCRenderer>` to control rendered components
+        pre: 'ProsePre',
+        h3: 'ProseH3',
+        code: 'ProseCode',
+        li: 'ProseLi',
+      }
+    }
   }
 })

@@ -73,17 +73,22 @@
               />
               <USeparator orientation="vertical"/>
             </template>
-            <UTooltip :text="$t('dashboard.missingFields')">
-              <UButton :disabled="!selectedAssistant.name || !selectedAssistant.instructions || !selectedAssistant.model"
-                       class="rounded-full"
-                       :loading="saving"
-                       trailing
-                       @click="saveAssistant"
-                       trailing-icon="ic:twotone-save-alt"
-              >
-                {{ $t('dashboard.save') }}
-              </UButton>
-            </UTooltip>
+            <UButton v-else
+                     :disabled="selectedAssistantId === 'new'"
+                     class="rounded-full"
+                     @click="deleteAssistant"
+                     color="error"
+                     trailing-icon="material-symbols:delete-rounded"
+            ></UButton>
+            <UButton :disabled="!selectedAssistant.name || !selectedAssistant.instructions || !selectedAssistant.model"
+                     class="rounded-full"
+                     :loading="saving"
+                     trailing
+                     @click="saveAssistant"
+                     trailing-icon="ic:twotone-save-alt"
+            >
+              {{ $t('dashboard.save') }}
+            </UButton>
           </div>
         </template>
         <USkeleton v-else class="h-8 w-full"/>
@@ -233,6 +238,15 @@ export default defineNuxtComponent({
         method: 'DELETE',
       });
       this.vectorStore = this.vectorStore.filter((file: any) => file.id !== fileId);
+    },
+    async deleteAssistant() {
+      if(!this.selectedAssistant?.id) return;
+      if(!confirm('Are you sure you want to delete this assistant?')) return;
+      await $fetch(`/api/assistants/${this.selectedAssistant.id}`, {
+        method: 'DELETE',
+      });
+      await this.userStore.getAssistants();
+      this.selectedAssistantId = this.userStore.assistants[0]?.id ?? 'new';
     }
   }
 });

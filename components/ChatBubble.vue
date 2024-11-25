@@ -1,10 +1,7 @@
 <template>
-  <div class="w-full">
-    <template v-if="latexEnabled">
-      <div v-html="parsedMarkdownLatex" class="w-full text-wrap whitespace-break-spaces latex"/>
-    </template>
-    <template v-else-if="markdownEnabled && messageText.length">
-      <MDC :value="messageText" class="w-full text-wrap whitespace-break-spaces markdown"/>
+  <div>
+    <template v-if="markdownEnabled && messageText.length">
+      <MDC :value="latexMessage" class="w-full text-wrap whitespace-break-spaces markdown grid"/>
     </template>
     <template v-else v-for="line in messageText.split('\n')" :key="line">
       <p v-if="line.length"
@@ -18,13 +15,6 @@
 </template>
 
 <script lang="ts">
-import rehypeKatex from 'rehype-katex'
-import rehypeStringify from 'rehype-stringify'
-import remarkMath from 'remark-math'
-import remarkParse from 'remark-parse'
-import remarkRehype from 'remark-rehype'
-import {unified} from 'unified'
-
 export default defineNuxtComponent({
   name: "ChatBubble",
   props: {
@@ -59,21 +49,10 @@ export default defineNuxtComponent({
     this.fetchStream();
   },
   computed: {
-    parsedMarkdownLatex() {
-      if(!this.message || !this.latexEnabled) return undefined;
-      const message = this.message.content
-        .map((content: any) => content.text.value)
-        .join(' ')
-        .replace(/\\\[\n(?:\s+)?(.+?)\n(?:\s+)?\\\]/g, `\$\$ $1 \$\$`)
-        .replace(/\\\(\s*(.+?)\s*\\\)/g, `\$\$ $1 \$\$`);
-      console.log(message);
-      return unified()
-        .use(remarkParse)
-        .use(remarkMath)
-        .use(remarkRehype)
-        .use(rehypeKatex)
-        .use(rehypeStringify)
-        .processSync(message);
+    latexMessage() {
+      console.log(this.messageText);
+      return this.messageText
+        .replace(/(\\\[\n? *.+? *\\\])/g, "```latex\n $1 \n```");
     },
     latexEnabled() {
       return this.renderer === 'latex';
@@ -142,37 +121,5 @@ export default defineNuxtComponent({
 </script>
 
 <style scoped>
-.latex :deep(.katex-html) {
-  display: none;
-}
-.latex :deep(mfrac) {
-  padding: 0 3px;
-}
-.latex :deep(mrow > *) {
-  margin: 0 1px;
-}
-.latex :deep(ul), .latex :deep(ol) {
-  line-height: 0;
-  margin: -0.7em 0 -0.3em 0;
-}
-.latex :deep(li), .latex :deep(p) {
-  line-height: 1.2;
-}
-.latex :deep(p) {
-  margin: -0.7em 0;
-}
-.latex :deep(p:has(> span)) {
-  margin-bottom: 0;
-}
-:deep(.markdown pre) {
-  max-width: 100%;
-  width: 100%;
-  overflow-x: auto;
-}
-:deep(.markdown code) {
-  max-width: 100%;
-  width: 100%;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-}
+
 </style>
