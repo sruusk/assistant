@@ -42,6 +42,8 @@ export default defineNuxtConfig({
   },
   logto: {
     pathnames: {
+      signIn: '/login',
+      signOut: '/logout',
       callback: '/auth/callback',
     },
   },

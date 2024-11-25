@@ -96,7 +96,7 @@
       <template #footer>
         <div class="flex flex-row items-center justify-start gap-3">
           <USkeleton class="h-8 w-8 rounded-full" />
-          <a href="/sign-out">{{ $t('logout') }}</a>
+          <a href="/logout">{{ $t('logout') }}</a>
         </div>
       </template>
     </UCard>
