@@ -3,7 +3,7 @@
     <div class="flex flex-col-reverse items-center justify-start h-full w-full overflow-y-scroll gap-5 px-2">
       <ChatBubble :stream="messageStore.stream"/>
       <template v-for="message in messageStore.messages" :key="message.id">
-        <ChatBubble :message="message" :markdown-enabled="menuItems[0][0].checked"/>
+        <ChatBubble :message="message" :renderer="renderer"/>
         <USeparator orientation="horizontal" class="w-full capitalize">{{ message.role }}</USeparator>
       </template>
       <USkeleton v-if="messageStore.loading" class="w-full h-10" v-for="i in 5" :key="i"/>
@@ -23,7 +23,7 @@
                    :ui="{ base: ['resize-none rounded-r-none'] }"
                    class="w-full"
         />
-        <UButton @click="sendMessage" icon="material-symbols:send-rounded" variant="outline" color="neutral"/>
+        <UButton :disabled="messageStore.loading" @click="sendMessage" icon="material-symbols:send-rounded" variant="outline" color="neutral"/>
         <UDropdownMenu :items="menuItems">
           <UButton icon="i-lucide-menu" color="neutral" variant="outline" />
         </UDropdownMenu>
@@ -39,13 +39,23 @@ export default defineNuxtComponent({
   data() {
     return {
       message: "",
+      renderer: "markdown",
       menuItems: [
         [
           {
             label: this.$t('dashboard.markdown'),
             icon: "material-symbols:markdown",
             checked: true,
-            onSelect: () => this.menuItems[0][0].checked = !this.menuItems[0][0].checked,
+            val: "markdown",
+            onSelect: () => this.setRenderer("markdown"),
+            type: "checkbox",
+          },
+          {
+            label: this.$t('dashboard.latex'),
+            icon: "file-icons:latex",
+            checked: false,
+            val: "latex",
+            onSelect: () => this.setRenderer("latex"),
             type: "checkbox",
           },
           {
@@ -78,6 +88,10 @@ export default defineNuxtComponent({
       await this.messageStore.deleteThread();
       this.messageStore.$reset();
     },
+    setRenderer(renderer: string) {
+      if(this.renderer === renderer) this.renderer = "text";
+      else this.renderer = renderer;
+    },
   },
   watch: {
     'userStore.activeAssistantId': {
@@ -85,6 +99,12 @@ export default defineNuxtComponent({
         this.messageStore.$reset();
       },
     },
+    renderer() {
+      this.menuItems[0].forEach((item) => {
+        console.log(item.val, this.renderer);
+        item.checked = item.val === this.renderer;
+      });
+    }
   },
 });
 </script>

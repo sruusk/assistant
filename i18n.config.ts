@@ -23,6 +23,9 @@ export default defineI18nConfig(() => ({
         noFiles : 'No files uploaded',
         resetConversation: 'Clear conversation',
         markdown: 'Markdown parser',
+        latex: 'LaTeX parser',
+        tokenLimitErrorTitle: 'Token Limit Exceeded',
+        tokenLimitErrorDescription: 'The request is too large for the {model} model.\nReduce the number of tokens in the message or try a different model.',
         step: {
           creating: 'Creating assistant...',
           updating: 'Updating assistant...',

@@ -17,6 +17,16 @@ export default defineAssistantAuthenticatedHandler(async (event) => {
         console.log('Received event', event);
         if(event.event === 'thread.message.delta') {
           controller.enqueue(event.data.delta.content[0].text.value);
+        } else if(event.event === 'thread.run.failed') {
+          const errorMsg = event.data.last_error?.message;
+          const gptRx = /Request too large for (gpt-[^-]{1,2}(-\w+)?)/gi;
+          const gptMatch = gptRx.exec(errorMsg);
+          if(gptMatch) {
+            const gptVersion = gptMatch[1];
+            console.error(`Request too large for ${gptVersion}`);
+            controller.enqueue(`TOKEN_LIMIT|${gptVersion}|`);
+          }
+          console.error('Thread run failed:', errorMsg);
         }
       }
       controller.close();

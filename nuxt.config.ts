@@ -7,7 +7,8 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     '@pinia/nuxt',
     '@logto/nuxt',
-    'nuxt-umami'
+    'nuxt-umami',
+    '@nuxtjs/mdc'
   ],
   css: ['~/assets/css/main.css'],
   ui: {
@@ -53,6 +54,14 @@ export default defineNuxtConfig({
   },
   nitro: {
     storage: {
+      db: {
+        driver: 'mongodb',
+        connectionString: process.env.DB_URL,
+        databaseName: 'assistant',
+        collectionName: 'nitro',
+      }
+    },
+    devStorage: {
       db: {
         driver: 'fs',
         base: './.storage',

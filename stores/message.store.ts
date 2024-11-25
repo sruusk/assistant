@@ -34,6 +34,7 @@ export const useMessageStore = defineStore('message', {
       if(!assistant || !this.thread) return;
       const controller = new AbortController();
       this.controllers.push(controller);
+      // @ts-ignore
       this.messages = await $fetch(`/api/assistants/${assistant}/thread/messages`, {
         signal: controller.signal,
       });
@@ -46,7 +47,7 @@ export const useMessageStore = defineStore('message', {
       const response = await fetch(`/api/assistants/${assistant}/thread/run`);
       const reader = response.body?.getReader();
       const decoder = new TextDecoder();
-
+      if(!reader) throw new Error('No reader');
       let streamingMessage = '';
       const stream = new ReadableStream({
         async start(controller) {
