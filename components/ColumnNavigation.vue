@@ -128,6 +128,14 @@
 <script lang="ts">
 
 import LabeledSlider from "~/components/LabeledSlider.vue";
+const newAssistant = {
+  id: null,
+  name: '',
+  instructions: '',
+  model: 'gpt-4o',
+  temperature: 1.0,
+  top_p: 1.0,
+};
 
 export default defineNuxtComponent({
   name: "ColumnNavigation",
@@ -145,14 +153,6 @@ export default defineNuxtComponent({
       saving: false,
       deleting: false,
       saveStep: 0,
-      newAssistant: {
-        id: null,
-        name: '',
-        instructions: '',
-        model: 'gpt-4o',
-        temperature: 1.0,
-        top_p: 1.0,
-      }
     }
   },
   setup() {
@@ -164,7 +164,7 @@ export default defineNuxtComponent({
     }
   },
   mounted() {
-    this.selectedAssistant = this.userStore.activeAssistant ?? structuredClone(this.newAssistant);
+    this.selectedAssistant = this.userStore.activeAssistant ?? structuredClone(newAssistant);
   },
   computed: {
     assistants() {
@@ -183,7 +183,7 @@ export default defineNuxtComponent({
     selectedAssistantId: {
       handler: async function (value) {
         if (!value) {
-          this.selectedAssistant = structuredClone(this.newAssistant);
+          this.selectedAssistant = structuredClone(newAssistant);
         } else {
           this.selectedAssistant = this.userStore.activeAssistant;
         }
