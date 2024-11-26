@@ -281,7 +281,7 @@ export default defineNuxtComponent({
         method: 'DELETE',
       });
       await this.userStore.getAssistants();
-      this.selectedAssistantId = this.userStore.assistants[0]?.id ?? 'new';
+      this.selectedAssistantId = this.userStore.assistants?.[0]?.id ?? null;
       this.deleting = false;
     }
   }
