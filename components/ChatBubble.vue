@@ -50,7 +50,6 @@ export default defineNuxtComponent({
   },
   computed: {
     latexMessage() {
-      console.log(this.messageText);
       return this.messageText
         .replace(/(\\\[\n? *.+? *\\\])/g, "```latex\n $1 \n```");
     },
@@ -81,7 +80,7 @@ export default defineNuxtComponent({
           title: this.$t('dashboard.tokenLimitErrorTitle'),
           description: this.$t('dashboard.tokenLimitErrorDescription', { model }),
           color: 'error',
-          duration: 10000,
+          duration: 15000,
           actions: [{
             icon: 'i-lucide-refresh-ccw',
             label: this.$t('dashboard.resetConversation'),

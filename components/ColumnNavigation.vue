@@ -1,12 +1,12 @@
 <template>
-  <div class="h-dvh min-h-dvh w-96 min-w-96">
-    <UCard class="h-full flex flex-col" :ui="{ body: 'grow' }">
+  <div class="h-full w-96 min-w-96">
+    <UCard class="h-full flex flex-col" :ui="{ body: 'grow', header: 'flex gap-4' }">
       <template #header>
+        <slot name="header"/>
         <USelect v-if="assistants"
                  :placeholder="$t('dashboard.selectAssistant')"
                  :items="assistants"
                  v-model="selectedAssistantId"
-                 :disabled="vectorStore === undefined"
                  value-key="id"
                  label-key="name"
                  class="w-full"
@@ -40,22 +40,28 @@
 
           <div class="w-full relative">
             <UButtonGroup class="w-full">
-              <UInput @change="(e:any) => {files = e.target?.files}" type="file" multiple="true" class="w-full"/>
+              <UInput @change="(e:any) => {files = e.target?.files ?? []}"
+                      type="file" ref="fileInput" multiple="true" class="w-full"
+              />
             </UButtonGroup>
             <OptionLabel :text="$t('dashboard.upload')"/>
           </div>
 
           <div v-if="selectedAssistantId !== 'new'" class="w-full relative ring ring-inset ring-[var(--ui-border-accented)] rounded-[calc(var(--ui-radius)*1.5)]">
-            <div v-if="vectorStore !== undefined" class="w-full pl-2">
-              <UButtonGroup v-if="vectorStore?.length"
-                            v-for="(file, index) in vectorStore"
+            <div v-if="userStore.activeAssistantFiles" class="w-full pl-2">
+              <UButtonGroup v-if="userStore.activeAssistantFiles.length"
+                            v-for="(file, index) in userStore.activeAssistantFiles"
                             :key="file.id"
                             class="flex flex-row items-center justify-between w-full border-b border-[var(--ui-border)] last:border-b-0"
               >
                 <div class="flex flex-row items-center gap-2 text-sm py-1">
                   <span>{{ file.filename }}</span>
                 </div>
-                <UButton icon="material-symbols:delete-rounded" class="hover:bg-[var(--ui-error)]" @click="deleteFile(file.id)"/>
+                <UButton icon="material-symbols:delete-rounded"
+                         class="hover:bg-[var(--ui-error)]"
+                         :class="{ 'rounded-tr-none': index !== 0, 'rounded-br-none': index !== userStore.activeAssistantFiles.length - 1 }"
+                         @click="deleteFile(file.id)"
+                />
               </UButtonGroup>
               <div v-else class="text-sm h-8 flex items-center">
                 <span>{{ $t('dashboard.noFiles') }}</span>
@@ -63,6 +69,20 @@
             </div>
             <USkeleton v-else class="h-8 w-full"/>
             <OptionLabel :text="$t('dashboard.files')"/>
+          </div>
+
+          <div class="w-full relative p-3 ring ring-inset ring-[var(--ui-border-accented)] rounded-[calc(var(--ui-radius)*1.5)]">
+            <OptionLabel :text="$t('dashboard.modelConfig')"/>
+            <LabeledSlider :tooltip="$t('dashboard.temperatureTip')"
+                           :label="$t('dashboard.temperature')"
+                           v-model:value="selectedAssistant.temperature"
+                           :max="2.0"
+            />
+            <LabeledSlider :tooltip="$t('dashboard.topPTip')"
+                           :label="$t('dashboard.topP')"
+                           v-model:value="selectedAssistant.top_p"
+                           ui="mt-5"
+            />
           </div>
 
           <div class="grow"/>
@@ -105,8 +125,11 @@
 
 <script lang="ts">
 
+import LabeledSlider from "~/components/LabeledSlider.vue";
+
 export default defineNuxtComponent({
   name: "ColumnNavigation",
+  components: {LabeledSlider},
   data() {
     return {
       selectedAssistantId: undefined,
@@ -118,24 +141,25 @@ export default defineNuxtComponent({
         'gpt-4',
       ],
       files: [] as any,
-      vectorStore: undefined as any,
       saving: false,
       saveStep: 0,
     }
   },
   setup() {
+    const fileInput = ref<HTMLInputElement | null>(null);
     return {
       userStore: useUserStore(),
+      fileInput,
     }
   },
   async beforeMount() {
-    await this.userStore.getAssistants();
-    this.selectedAssistantId = this.userStore.assistants[0]?.id ?? 'new';
+    if(this.userStore.assistants.length === 0) await this.userStore.getAssistants();
+    this.selectedAssistantId = this.userStore.activeAssistantId ?? this.userStore.assistants[0]?.id ?? 'new';
   },
   computed: {
     assistants() {
       return [...this.userStore.assistants, { id: 'new', name: this.$t('dashboard.newAssistant') }];
-    }
+    },
   },
   watch: {
     selectedAssistantId: {
@@ -147,23 +171,25 @@ export default defineNuxtComponent({
             name: '',
             instructions: '',
             model: this.availableModels[0],
+            temperature: 1.0,
+            top_p: 1.0,
           }
-          this.vectorStore = [];
         } else {
-          this.userStore.activeAssistantId = value;
-          this.selectedAssistant = this.userStore.getAssistantById(value);
-          this.vectorStore = undefined;
-          this.vectorStore = await this.getVectorStoreFiles(this.selectedAssistant.tool_resources.file_search.vector_store_ids[0]);
+          this.selectedAssistant = this.userStore.changeAssistant(value);
         }
       },
       deep: true
+    },
+    'userStore.activeAssistantId': { // Bind in both directions
+      handler: function (value) {
+        if (value) {
+          this.selectedAssistantId = value;
+        }
+      },
+      immediate: true
     }
   },
   methods: {
-    async getVectorStoreFiles(storeId: string) {
-      if (!storeId) return;
-      return await $fetch(`/api/store/${storeId}`)
-    },
     async saveAssistant() {
       try {
         this.saving = true;
@@ -190,6 +216,8 @@ export default defineNuxtComponent({
               name: assistant.name,
               instructions: assistant.instructions,
               model: assistant.model,
+              temperature: assistant.temperature ?? 1.0,
+              top_p: assistant.top_p ?? 1.0,
             }),
           });
         }
@@ -203,6 +231,8 @@ export default defineNuxtComponent({
         this.saveStep = 3;
         await this.userStore.getAssistants();
         this.selectedAssistantId = assistant.id;
+        await this.userStore.getAssistantFiles(assistant.id);
+        this.fileInput?.value && (this.fileInput.value = '');
         this.saving = false;
         this.saveStep = 0;
       } catch (e) {
@@ -226,10 +256,10 @@ export default defineNuxtComponent({
           body: formData,
         });
       }
-      this.vectorStore = await this.getVectorStoreFiles(vectorStoreId);
     },
     async deleteFile(fileId: string) {
       const vectorStoreId = this.selectedAssistant.tool_resources.file_search.vector_store_ids[0];
+      const assistantId = this.selectedAssistant.id;
       if(!vectorStoreId) throw new Error('No vector store found');
 
       if(!confirm('Are you sure you want to delete this file?')) return;
@@ -237,7 +267,7 @@ export default defineNuxtComponent({
       await $fetch(`/api/store/${vectorStoreId}/${fileId}`, {
         method: 'DELETE',
       });
-      this.vectorStore = this.vectorStore.filter((file: any) => file.id !== fileId);
+      this.userStore.getAssistantFiles(assistantId);
     },
     async deleteAssistant() {
       if(!this.selectedAssistant?.id) return;

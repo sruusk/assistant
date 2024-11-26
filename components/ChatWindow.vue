@@ -1,15 +1,16 @@
 <template>
   <UCard class="h-full flex flex-col" :ui="{ body: 'grow overflow-y-hidden' }">
     <div class="flex flex-col-reverse items-center justify-start h-full overflow-y-auto gap-5 px-2">
+      <USeparator v-if="userStore.activeAssistantId && !messageStore.loading && !messageStore.messages?.length" orientation="horizontal" class="w-full">{{ $t('dashboard.noMessages') }}</USeparator>
       <ChatBubble :stream="messageStore.stream"/>
       <template v-for="message in messageStore.messages" :key="message.id">
         <ChatBubble :message="message" :renderer="renderer"/>
         <USeparator orientation="horizontal" class="w-full capitalize">{{ message.role }}</USeparator>
       </template>
-      <USkeleton v-if="messageStore.loading" class="w-full h-10" v-for="i in 5" :key="i"/>
+      <USkeleton v-if="messageStore.loading" class="w-full h-16" v-for="i in 5" :key="i"/>
     </div>
     <template #footer>
-      <UButtonGroup class="w-full">
+      <UButtonGroup v-if="userStore.activeAssistantId" class="w-full">
         <UTextarea :autoresize="true"
                    :rows="1"
                    :maxrows="5"
@@ -28,6 +29,7 @@
           <UButton icon="i-lucide-menu" color="neutral" variant="outline" />
         </UDropdownMenu>
       </UButtonGroup>
+      <USkeleton v-else class="w-full h-8"/>
     </template>
   </UCard>
 </template>
