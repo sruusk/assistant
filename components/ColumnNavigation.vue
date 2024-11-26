@@ -2,7 +2,7 @@
   <div class="h-dvh min-h-dvh w-96 min-w-96">
     <UCard class="h-full flex flex-col" :ui="{ body: 'grow' }">
       <template #header>
-        <USelect v-if="assistants.length > 1"
+        <USelect v-if="assistants"
                  :placeholder="$t('dashboard.selectAssistant')"
                  :items="assistants"
                  v-model="selectedAssistantId"
