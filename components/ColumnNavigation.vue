@@ -20,6 +20,7 @@
           </UInput>
 
           <UTextarea :autoresize="true"
+                     :maxrows="10"
                      v-model="selectedAssistant.instructions"
                      placeholder=""
                      class="w-full"
@@ -163,7 +164,7 @@ export default defineNuxtComponent({
     }
   },
   mounted() {
-    this.selectedAssistant = this.userStore.activeAssistant ?? this.newAssistant;
+    this.selectedAssistant = this.userStore.activeAssistant ?? structuredClone(this.newAssistant);
   },
   computed: {
     assistants() {
@@ -182,7 +183,7 @@ export default defineNuxtComponent({
     selectedAssistantId: {
       handler: async function (value) {
         if (!value) {
-          this.selectedAssistant = this.newAssistant;
+          this.selectedAssistant = structuredClone(this.newAssistant);
         } else {
           this.selectedAssistant = this.userStore.activeAssistant;
         }

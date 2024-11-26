@@ -2,7 +2,10 @@
   <UCard class="h-full flex flex-col" :ui="{ body: 'grow overflow-y-hidden' }">
     <div class="flex flex-col-reverse items-center justify-start h-full overflow-y-auto gap-5 px-2">
       <USeparator v-if="userStore.activeAssistantId && !messageStore.loading && !messageStore.messages?.length" orientation="horizontal" class="w-full">{{ $t('dashboard.noMessages') }}</USeparator>
+
+      <USeparator v-if="messageStore.stream" orientation="horizontal" class="w-full">Assistant</USeparator>
       <ChatBubble :stream="messageStore.stream"/>
+
       <template v-for="message in messageStore.messages" :key="message.id">
         <ChatBubble :message="message" :renderer="renderer"/>
         <USeparator orientation="horizontal" class="w-full capitalize">{{ message.role }}</USeparator>
@@ -13,7 +16,7 @@
       <UButtonGroup v-if="userStore.activeAssistantId" class="w-full">
         <UTextarea :autoresize="true"
                    :rows="1"
-                   :maxrows="5"
+                   :maxrows="6"
                    autocomplete="off"
                    autocorrect="on"
                    @keydown.enter.prevent.exact="sendMessage"
