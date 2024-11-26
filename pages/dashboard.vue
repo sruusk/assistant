@@ -1,16 +1,17 @@
 <template>
-  <DevOnly v-if="false">
-    <ul v-if="Boolean(user)" class="fixed top-0 right-0 backdrop-blur-xl">
-      <li v-for="(value, key) in user"><b>{{ key }}:</b> {{ value }}</li>
-    </ul>
-  </DevOnly>
-  <ChatWindow/>
+  <NuxtLayout :name="layout as any">
+    <DevOnly v-if="false">
+      <ul v-if="Boolean(user)" class="fixed top-0 right-0 backdrop-blur-xl">
+        <li v-for="(value, key) in user"><b>{{ key }}:</b> {{ value }}</li>
+      </ul>
+    </DevOnly>
+    <ChatWindow/>
+  </NuxtLayout>
 </template>
 
 <script lang="ts">
 export default defineNuxtComponent({
   name: "Dashboard",
-  inject: ['viewWidth'],
   data() {
     return {
       layoutThreshold: 900,
@@ -19,40 +20,36 @@ export default defineNuxtComponent({
   async setup() {
     definePageMeta({
       name: 'Dashboard',
-      layout: 'wide',
+      layout: false,
       requireAuth: true,
     })
 
+    const layout = useCookie('layout');
+    if(!layout.value) layout.value = 'wide';
+
     const userStore = useUserStore();
-    await userStore.getAssistants()
-    if(userStore.assistants?.length)
-      userStore.changeAssistant(userStore.assistants[0].id)
 
     return {
       user: useLogtoUser(),
+      userStore,
+      layout,
     }
   },
-  beforeMount() {
-    if(import.meta.client) {
-      //this.setLayout() // This will produce hydration warning in the console
-      onNuxtReady(() => {
-        this.setLayout()
-      })
-    }
-  },
-  watch: {
-    viewWidth: {
-      handler() {
-        this.setLayout()
-      },
-    }
+  async beforeMount() {
+    await this.userStore.getAssistants();
+    if(this.userStore.assistants?.length)
+      this.userStore.changeAssistant(this.userStore.assistants[0].id)
+
+    this.handleResize();
+    window.addEventListener('resize', this.handleResize);
   },
   methods: {
-    setLayout() {
-      if((this.viewWidth as number) < this.layoutThreshold) {
-        setPageLayout('narrow')
+    handleResize() {
+      const vw = window.innerWidth;
+      if(vw < this.layoutThreshold) {
+        this.layout = 'narrow';
       } else {
-        setPageLayout('wide')
+        this.layout = 'wide';
       }
     }
   }

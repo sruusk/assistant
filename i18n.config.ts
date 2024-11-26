@@ -24,7 +24,7 @@ export default defineI18nConfig(() => ({
         noAssistants: 'No assistants found',
         noAssistantsDescription: 'Create a new assistant to get started',
         modelConfig: 'Model configuration',
-        noMessages: 'No messages yet 🤔, start a conversation by sending a message',
+        noMessages: 'No messages yet 🤔',
         temperature: 'Temperature',
         topP: 'Top P',
         temperatureTip: 'The higher the temperature, the more creative the response. Lower temperatures are more predictable.',

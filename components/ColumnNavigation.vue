@@ -4,7 +4,6 @@
       <template #header>
         <slot name="header"/>
         <USelect v-if="assistants"
-                 :placeholder="$t('dashboard.selectAssistant')"
                  :items="assistants"
                  v-model="selectedAssistantId"
                  value-key="id"
@@ -13,6 +12,7 @@
         />
         <USkeleton v-else class="h-8 w-full"/>
       </template>
+
       <div class="flex flex-col items-start justify-start h-full gap-5">
         <template v-if="selectedAssistant">
           <UInput v-model="selectedAssistant.name" placeholder="" :ui="{ base: 'peer' }" class="w-full">
@@ -142,6 +142,14 @@ export default defineNuxtComponent({
       files: [] as any,
       saving: false,
       saveStep: 0,
+      newAssistant: {
+        id: null,
+        name: '',
+        instructions: '',
+        model: 'gpt-4o',
+        temperature: 1.0,
+        top_p: 1.0,
+      }
     }
   },
   setup() {
@@ -153,7 +161,7 @@ export default defineNuxtComponent({
     }
   },
   mounted() {
-    this.selectedAssistant = this.userStore.activeAssistant;
+    this.selectedAssistant = this.userStore.activeAssistant ?? this.newAssistant;
   },
   computed: {
     assistants() {
@@ -172,14 +180,7 @@ export default defineNuxtComponent({
     selectedAssistantId: {
       handler: async function (value) {
         if (!value) {
-          this.selectedAssistant = {
-            id: null,
-            name: '',
-            instructions: '',
-            model: this.availableModels[0],
-            temperature: 1.0,
-            top_p: 1.0,
-          }
+          this.selectedAssistant = this.newAssistant;
         } else {
           this.selectedAssistant = this.userStore.activeAssistant;
         }
