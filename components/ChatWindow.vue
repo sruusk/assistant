@@ -96,11 +96,6 @@ export default defineNuxtComponent({
     },
   },
   watch: {
-    'userStore.activeAssistantId': {
-      handler() {
-        this.messageStore.$reset();
-      },
-    },
     renderer() {
       this.menuItems[0].forEach((item) => {
         console.log(item.val, this.renderer);

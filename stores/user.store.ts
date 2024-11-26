@@ -5,6 +5,7 @@ export const useUserStore = defineStore('user', {
       assistants: [] as any[],
       activeAssistantId: null as null | string,
       files: {} as Record<string, AssistantFile[]>,
+      noAssistants: false,
     }
   },
   getters: {
@@ -21,10 +22,12 @@ export const useUserStore = defineStore('user', {
   },
   actions: {
     changeAssistant(id: string) {
+      if(this.activeAssistantId === id) return this.activeAssistant;
       this.activeAssistantId = id;
       if(!this.activeAssistantFiles) {
         this.getAssistantFiles(id);
       }
+      if(id) useMessageStore().$reset();
       return this.activeAssistant;
     },
     async getAssistantFiles(id: string) {
@@ -32,6 +35,7 @@ export const useUserStore = defineStore('user', {
       if(asst) {
         const storeId = asst.tool_resources?.file_search?.vector_store_ids?.[0];
         if(storeId) {
+          // @ts-ignore
           this.files[id] = await $fetch(`/api/store/${storeId}`);
         }
       }
@@ -45,6 +49,7 @@ export const useUserStore = defineStore('user', {
         }
         this.assistants = await Promise.all(promises);
       }
+      this.noAssistants = this.assistants.length === 0;
     },
   }
 })

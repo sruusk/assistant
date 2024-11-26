@@ -13,27 +13,32 @@ export default defineNuxtComponent({
   inject: ['viewWidth'],
   data() {
     return {
+      layoutThreshold: 900,
     }
   },
-  setup() {
+  async setup() {
     definePageMeta({
       name: 'Dashboard',
       layout: 'wide',
-      requireAuth: true
+      requireAuth: true,
     })
 
     const userStore = useUserStore();
-    userStore.getAssistants().then(() => {
-      if(userStore.assistants?.length)
-        userStore.changeAssistant(userStore.assistants[0].id)
-    })
+    await userStore.getAssistants()
+    if(userStore.assistants?.length)
+      userStore.changeAssistant(userStore.assistants[0].id)
 
     return {
       user: useLogtoUser(),
     }
   },
   beforeMount() {
-    this.setLayout()
+    if(import.meta.client) {
+      //this.setLayout() // This will produce hydration warning in the console
+      onNuxtReady(() => {
+        this.setLayout()
+      })
+    }
   },
   watch: {
     viewWidth: {
@@ -44,7 +49,7 @@ export default defineNuxtComponent({
   },
   methods: {
     setLayout() {
-      if(this.viewWidth < 900) {
+      if((this.viewWidth as number) < this.layoutThreshold) {
         setPageLayout('narrow')
       } else {
         setPageLayout('wide')

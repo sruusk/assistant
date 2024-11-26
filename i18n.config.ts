@@ -21,6 +21,8 @@ export default defineI18nConfig(() => ({
         messagePlaceholder: 'Type your message',
         files: 'Uploaded files',
         noFiles : 'No files uploaded',
+        noAssistants: 'No assistants found',
+        noAssistantsDescription: 'Create a new assistant to get started',
         modelConfig: 'Model configuration',
         noMessages: 'No messages yet 🤔, start a conversation by sending a message',
         temperature: 'Temperature',

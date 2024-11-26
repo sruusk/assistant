@@ -10,15 +10,9 @@
         </ColumnNavigation>
       </template>
     </USlideover>
-<!--    <USlideover side="left" :ui="{ header: 'p-0', content: 'max-w-[90vw]' }">-->
-<!--      <UButton icon="i-lucide-menu" color="neutral" variant="ghost" class="absolute top-2 left-2"/>-->
-<!--      <template #content>-->
-<!--        <ColumnNavigation class="w-full !min-w-0"/>-->
-<!--      </template>-->
-<!--    </USlideover>-->
     <div class="h-full contain-content relative grow">
       <div class="z-50 w-full h-12 absolute top-0 justify-center items-center flex backdrop-blur-2xl bg-[var(--ui-bg-elevated)]">
-        {{ userStore.activeAssistant?.name }}
+        {{ userStore.activeAssistant?.name || '' }}
       </div>
       <slot/>
     </div>
@@ -30,12 +24,26 @@ export default defineNuxtComponent({
   name: "mobile",
   data() {
     return {
-      open: false
+      open: false,
     }
   },
   setup() {
     return {
       userStore: useUserStore(),
+      toast: useToast(),
+    }
+  },
+  watch: {
+    'userStore.noAssistants': {
+      handler() {
+        if(this.userStore.noAssistants) {
+          this.open = true;
+          this.toast.add({
+            title: this.$t('dashboard.noAssistants'),
+            description: this.$t('dashboard.noAssistantsDescription'),
+          })
+        }
+      }
     }
   }
 });
