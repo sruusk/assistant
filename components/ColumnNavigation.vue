@@ -96,6 +96,7 @@
             <UButton v-else
                      :disabled="!userStore.activeAssistantId"
                      class="rounded-full"
+                     :loading="deleting"
                      @click="deleteAssistant"
                      color="error"
                      trailing-icon="material-symbols:delete-rounded"
@@ -141,6 +142,7 @@ export default defineNuxtComponent({
       ],
       files: [] as any,
       saving: false,
+      deleting: false,
       saveStep: 0,
       newAssistant: {
         id: null,
@@ -273,11 +275,13 @@ export default defineNuxtComponent({
     async deleteAssistant() {
       if(!this.selectedAssistant?.id) return;
       if(!confirm('Are you sure you want to delete this assistant?')) return;
+      this.deleting = true;
       await $fetch(`/api/assistants/${this.selectedAssistant.id}`, {
         method: 'DELETE',
       });
       await this.userStore.getAssistants();
       this.selectedAssistantId = this.userStore.assistants[0]?.id ?? 'new';
+      this.deleting = false;
     }
   }
 });
