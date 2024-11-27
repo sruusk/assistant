@@ -17,10 +17,10 @@ export const defineAssistantAuthenticatedHandler = <T extends EventHandlerReques
     }
 
     const userAssistants = await event.context.storage.getItem(`user:${user.sub}:assistants`) || [];
-    // if (!userAssistants.includes(assistant)) {
-    //   setResponseStatus(event, 403);
-    //   return { error: 'Forbidden' };
-    // }
+    if (!userAssistants.includes(assistant)) {
+      setResponseStatus(event, 403);
+      return { error: 'Forbidden' };
+    }
 
     try {
       // Call the actual handler

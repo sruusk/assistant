@@ -11,6 +11,20 @@ export default defineNuxtConfig({
     '@nuxtjs/mdc'
   ],
   css: ['~/assets/css/main.css'],
+  vue: {
+    compilerOptions: {
+      isCustomElement: (tag) => ['path', 'svg'].includes(tag.toLowerCase())
+    }
+  },
+  app: {
+    head: {
+      link: [
+        {
+          rel: "stylesheet", href: "https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+        }
+      ]
+    }
+  },
   ui: {
     theme: {
       colors: ['primary', 'secondary', 'success', 'info', 'warning', 'error'],
@@ -83,6 +97,16 @@ export default defineNuxtConfig({
         code: 'ProseCode',
         li: 'ProseLi',
       }
+    },
+    rehypePlugins: {
+      'rehype-katex': {
+        options: {
+          output: 'html',
+        }
+      },
+    },
+    remarkPlugins:  {
+      'remark-math': {},
     }
-  }
+  },
 })
