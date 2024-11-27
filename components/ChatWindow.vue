@@ -27,7 +27,13 @@
                    :ui="{ base: ['resize-none rounded-r-none'] }"
                    class="w-full"
         />
-        <UButton :disabled="messageStore.loading" @click="sendMessage" icon="material-symbols:send-rounded" variant="outline" color="neutral"/>
+        <UButton :disabled="messageStore.loading"
+                 @click="sendMessage"
+                 icon="material-symbols:send-rounded"
+                 variant="outline"
+                 color="neutral"
+                 :loading="sendingMessage"
+        />
         <UDropdownMenu :items="menuItems">
           <UButton icon="i-lucide-menu" color="neutral" variant="outline" />
         </UDropdownMenu>
@@ -45,6 +51,7 @@ export default defineNuxtComponent({
     return {
       message: "",
       renderer: "markdown",
+      sendingMessage: false,
       menuItems: [
         [
           {
@@ -55,14 +62,6 @@ export default defineNuxtComponent({
             onSelect: () => this.setRenderer("markdown"),
             type: "checkbox",
           },
-          // {
-          //   label: this.$t('dashboard.latex'),
-          //   icon: "file-icons:latex",
-          //   checked: false,
-          //   val: "latex",
-          //   onSelect: () => this.setRenderer("latex"),
-          //   type: "checkbox",
-          // },
           {
             label: this.$t('dashboard.resetConversation'),
             icon: "material-symbols-light:directory-sync",
@@ -82,12 +81,14 @@ export default defineNuxtComponent({
   },
   methods: {
     async sendMessage() {
+      this.sendingMessage = true;
       await this.messageStore.addMessage({
         role: "user",
         content: this.message,
       });
       this.message = "";
       await this.messageStore.runThread();
+      this.sendingMessage = false;
     },
     async clearConversation() {
       await this.messageStore.deleteThread();
@@ -101,7 +102,6 @@ export default defineNuxtComponent({
   watch: {
     renderer() {
       this.menuItems[0].forEach((item) => {
-        console.log(item.val, this.renderer);
         item.checked = item.val === this.renderer;
       });
     }

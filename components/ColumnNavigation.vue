@@ -21,6 +21,7 @@
 
           <UTextarea :autoresize="true"
                      :maxrows="10"
+                     autocomplete="off"
                      v-model="selectedAssistant.instructions"
                      placeholder=""
                      class="w-full"
@@ -133,7 +134,7 @@ const newAssistant = {
   id: null,
   name: '',
   instructions: '',
-  model: 'gpt-4o',
+  model: 'gpt-4o-mini',
   temperature: 1.0,
   top_p: 1.0,
 };
