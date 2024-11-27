@@ -43,6 +43,7 @@
             <UButtonGroup class="w-full">
               <UInput @change="(e:any) => {files = e.target?.files ?? []}"
                       type="file" ref="fileInput" multiple="true" class="w-full"
+                      accept="text/*, .sh, .json, .doc, .docx, .pdf, .pptx, .ts"
               />
             </UButtonGroup>
             <OptionLabel :text="$t('dashboard.upload')"/>
