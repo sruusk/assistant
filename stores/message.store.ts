@@ -11,16 +11,25 @@ export const useMessageStore = defineStore('message', {
     }
   },
   actions: {
-    async addMessage(msg: Message) {
+    async addMessage(msg: OutgoingMessage) {
       if(!this.thread) return;
       await $fetch(`/api/assistants/${useUserStore().activeAssistantId}/thread/messages`, {
         method: 'POST',
         body: JSON.stringify(msg),
       });
       this.messages.unshift({
-        ...msg,
         id: Date.now().toString(),
         role: 'user',
+        content: [
+          ...msg.content.map(c => ({
+            type: c.type,
+            text: {
+              value: c.text,
+              annotations: [],
+            }
+          })),
+        ],
+        attachments: msg.attachments,
       });
     },
     async getMessages() {
@@ -95,12 +104,21 @@ export const useMessageStore = defineStore('message', {
   },
 });
 
+interface OutgoingMessage {
+  role: 'user' | 'assistant';
+  content: Array<{
+    type: string;
+    text: string,
+  }>;
+  attachments?: Array<{ type: string, url: string }>;
+}
+
 interface Message {
   id?: string;
   role: 'user' | 'assistant';
   content: Array<{
     type: string;
-    text?: {
+    text: {
       value: string;
       annotations: Array<{
         text: string;
@@ -109,9 +127,6 @@ interface Message {
         };
       }>;
     },
-    image_url?: {
-      url: string;
-    }
   }>;
   attachments?: Array<{ type: string, url: string }>;
 }

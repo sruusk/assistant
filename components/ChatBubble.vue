@@ -1,5 +1,6 @@
 <template>
   <div>
+    <ImagePreview v-if="images?.length" :images="images" static class="pb-3"/>
     <template v-if="markdownEnabled && messageText.length">
       <MDC :value="latexMessage" class="w-full text-wrap whitespace-break-spaces markdown grid"/>
     </template>
@@ -34,7 +35,8 @@ export default defineNuxtComponent({
   },
   data() {
     return {
-      messageText: this.message?.content?.map((content: any) => content.text.value).join('\n') ?? '',
+      messageText: this.message?.content?.filter((content: any) => content.type === 'text').map((content: any) => content.text?.value).join('\n') ?? '',
+      messageImages: this.message?.content?.filter((content: any) => content.type === 'image_url') ?? [],
       streaming: false,
     };
   },
@@ -59,6 +61,10 @@ export default defineNuxtComponent({
     markdownEnabled() {
       return this.renderer === 'markdown';
     },
+    images(): string[] {
+      const images = this.message?.attachments?.filter((attachment: {type: string, url: string}) => attachment.type === 'image') ?? [];
+      return images.map((attachment: {type: string, url: string}) => attachment.url);
+    }
   },
   methods: {
     async fetchStream() {
@@ -120,5 +126,4 @@ export default defineNuxtComponent({
 </script>
 
 <style scoped>
-
 </style>

@@ -3,8 +3,10 @@
     <div class="flex flex-col-reverse items-center justify-start h-full overflow-y-auto gap-5 px-2">
       <USeparator v-if="userStore.activeAssistantId && !messageStore.loading && !messageStore.messages?.length" orientation="horizontal" class="w-full">{{ $t('dashboard.noMessages') }}</USeparator>
 
-      <USeparator v-if="messageStore.stream" orientation="horizontal" class="w-full">Assistant</USeparator>
-      <ChatBubble :stream="messageStore.stream"/>
+      <template v-if="messageStore.stream">
+        <ChatBubble :stream="messageStore.stream"/>
+        <USeparator orientation="horizontal" class="w-full">Assistant</USeparator>
+      </template>
 
       <template v-for="message in messageStore.messages" :key="message.id">
         <ChatBubble :message="message" :renderer="renderer"/>
@@ -91,23 +93,14 @@ export default defineNuxtComponent({
       await this.messageStore.addMessage({
         role: "user",
         content: [
-          {
-            type: 'text',
-            text: {
-              value: this.message,
-              annotations: [],
-            }
-          },
-          ...(this.images.length ?
-            this.images.map((image: string) => ({
-              type: 'image_url',
-              image_url: {
-                url: image,
-              }
-            })) : []),
+          ...(this.message?.length ? [{ type: 'text', text: this.message }] : []),
         ],
+        ...(this.images.length && {
+          attachments: this.images.map((image) => ({ type: 'image', url: image })),
+        }),
       });
       this.message = "";
+      this.images = [];
       await this.messageStore.runThread();
       this.sendingMessage = false;
     },
