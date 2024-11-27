@@ -162,6 +162,7 @@ export default defineNuxtComponent({
     return {
       userStore,
       fileInput,
+      toast: useToast(),
     }
   },
   mounted() {
@@ -194,6 +195,7 @@ export default defineNuxtComponent({
   },
   methods: {
     async saveAssistant() {
+      if(!this.testFileSizes()) return;
       try {
         this.saving = true;
         const assistant = this.selectedAssistant;
@@ -246,6 +248,20 @@ export default defineNuxtComponent({
         this.saveStep = 0;
         alert('An error occurred while saving the assistant');
       }
+    },
+    testFileSizes() { // returns true if all files are less than the limit
+      for(const file of this.files) {
+        if(file.size > 500 * 1024 * 1024) {
+          this.toast.add({
+            title: this.$t('dashboard.fileSizeErrorTitle'),
+            description: this.$t('dashboard.fileSizeErrorDescription', { size: '500MB' }),
+            color: 'error',
+            duration: 10000,
+          });
+          return false;
+        }
+      }
+      return true;
     },
     async createVectorStore() {
       return await $fetch('/api/store', {

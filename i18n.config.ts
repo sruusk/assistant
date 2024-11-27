@@ -34,6 +34,8 @@ export default defineI18nConfig(() => ({
         latex: 'LaTeX parser',
         tokenLimitErrorTitle: 'Token Limit Exceeded',
         tokenLimitErrorDescription: 'The request is too large for the {model} model.\nReduce the number of tokens in the message or try a different model.',
+        fileSizeErrorTitle: 'File Size Exceeded',
+        fileSizeErrorDescription: 'One or more files exceed the maximum file size of {size}.',
         step: {
           creating: 'Creating assistant...',
           updating: 'Updating assistant...',
