@@ -13,6 +13,7 @@
       <USkeleton v-if="messageStore.loading" class="w-full h-16" v-for="i in 5" :key="i"/>
     </div>
     <template #footer>
+      <ImagePreview v-if="images.length" :images="images" class="pb-4" @remove="(index) => images.splice(index, 1)"/>
       <UButtonGroup v-if="userStore.activeAssistantId" class="w-full">
         <UTextarea :autoresize="true"
                    :rows="1"
@@ -22,6 +23,7 @@
                    @keydown.enter.prevent.exact="sendMessage"
                    @keydown.ctrl.enter.prevent.exact="message += '\n'"
                    @keydown.shift.enter.prevent.exact="message += '\n'"
+                   @paste="handlePaste"
                    v-model="message"
                    :placeholder="$t('dashboard.messagePlaceholder')"
                    :ui="{ base: ['resize-none rounded-r-none'] }"
@@ -45,13 +47,17 @@
 
 <script lang="ts">
 
+import ImagePreview from "~/components/ImagePreview.vue";
+
 export default defineNuxtComponent({
   name: "ChatWindow",
+  components: {ImagePreview},
   data() {
     return {
       message: "",
       renderer: "markdown",
       sendingMessage: false,
+      images: [] as string[],
       menuItems: [
         [
           {
@@ -84,7 +90,22 @@ export default defineNuxtComponent({
       this.sendingMessage = true;
       await this.messageStore.addMessage({
         role: "user",
-        content: this.message,
+        content: [
+          {
+            type: 'text',
+            text: {
+              value: this.message,
+              annotations: [],
+            }
+          },
+          ...(this.images.length ?
+            this.images.map((image: string) => ({
+              type: 'image_url',
+              image_url: {
+                url: image,
+              }
+            })) : []),
+        ],
       });
       this.message = "";
       await this.messageStore.runThread();
@@ -97,6 +118,28 @@ export default defineNuxtComponent({
     setRenderer(renderer: string) {
       if(this.renderer === renderer) this.renderer = "text";
       else this.renderer = renderer;
+    },
+    handleImageUpload(file: File) {
+      if(!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.images.push(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    },
+    handlePaste(event: ClipboardEvent) {
+      const items = event.clipboardData?.items;
+      if (items) {
+        for (const item of items) {
+          if (item.type.startsWith('image/')) {
+            const file = item.getAsFile();
+            if (file) {
+              this.handleImageUpload(file);
+            }
+          }
+        }
+      }
     },
   },
   watch: {
