@@ -27,7 +27,7 @@ export const useUserStore = defineStore('user', {
       if(!this.activeAssistantFiles) {
         this.getAssistantFiles(id);
       }
-      if(id) useMessageStore().$reset();
+      useMessageStore().$reset();
       return this.activeAssistant;
     },
     async getAssistantFiles(id: string) {
