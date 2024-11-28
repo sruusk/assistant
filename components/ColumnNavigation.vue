@@ -1,6 +1,6 @@
 <template>
   <div class="h-full w-96 min-w-96">
-    <UCard class="h-full flex flex-col" :ui="{ body: 'grow', header: 'flex gap-4' }">
+    <UCard class="h-full flex flex-col" :ui="{ body: 'grow h-full overflow-auto', header: 'flex gap-4' }">
       <template #header>
         <slot name="header"/>
         <USelect v-if="assistants"
@@ -89,7 +89,7 @@
           </div>
 
           <div class="grow"/>
-          <div class="w-full flex flex-row justify-end gap-5">
+          <div class="w-full flex flex-row justify-end gap-5 pb-5 -mb-5">
             <template v-if="saving">
               <UProgress v-model="saveStep"
                          :max="[$t('dashboard.step.creating'), $t('dashboard.step.updating'), $t('dashboard.step.uploading'), $t('dashboard.step.finishing')]"
