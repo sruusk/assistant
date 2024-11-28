@@ -1,12 +1,12 @@
 <template>
-  <li class="ml-5">
+  <ol class="list-decimal">
     <slot />
-  </li>
+  </ol>
 </template>
 
 <script lang="ts">
 export default defineNuxtComponent({
-  name: "ProseLi"
+  name: "ProseOl.global"
 });
 </script>
 

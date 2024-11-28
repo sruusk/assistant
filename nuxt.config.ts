@@ -96,6 +96,8 @@ export default defineNuxtConfig({
         h3: 'ProseH3',
         code: 'ProseCode',
         li: 'ProseLi',
+        ul: 'ProseUl',
+        ol: 'ProseOl',
       }
     },
     rehypePlugins: {
