@@ -164,6 +164,7 @@ export default defineNuxtComponent({
       userStore,
       fileInput,
       toast: useToast(),
+      confirm: useConfirm(),
     }
   },
   mounted() {
@@ -293,7 +294,14 @@ export default defineNuxtComponent({
     },
     async deleteAssistant() {
       if(!this.selectedAssistant?.id) return;
-      if(!confirm('Are you sure you want to delete this assistant?')) return;
+
+      // Confirm deletion
+      if(!await this.confirm.confirm({
+        title: this.$t('dialog.confirmDelete'),
+        description: this.$t('dialog.deleteItem', { item: `${this.selectedAssistant.name} assistant` }),
+        confirmButtonText: 'dialog.delete',
+      })) return;
+
       this.deleting = true;
       await $fetch(`/api/assistants/${this.selectedAssistant.id}`, {
         method: 'DELETE',

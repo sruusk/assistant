@@ -44,6 +44,13 @@ export default defineI18nConfig(() => ({
         }
       },
       logout: 'Logout',
+      dialog: {
+        confirm: 'Confirm',
+        cancel: 'Cancel',
+        delete: 'Delete',
+        confirmDelete: 'Confirm delete',
+        deleteItem: 'Are you sure you want to delete {item}?',
+      }
     }
   }
 }))
