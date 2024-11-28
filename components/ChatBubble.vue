@@ -52,9 +52,8 @@ export default defineNuxtComponent({
   },
   computed: {
     latexMessage() {
-      if(this.stream) return this.messageText; // Don't process latex if streaming
       return this.messageText
-        .replace(/\\(?:\[|\()\n?(?: *`? *(.+?) *`? *|(\n?\\[\w\{\}\|]+(?:.+|\n+)+?\\end[\{\}\w]*\n?))\n?\\(?:\]|\))/g, "\$\$ $1$2 \$\$");
+        .replace(/\\(?:\[|\()\n?(?: *`? *(.+?) *`? *|(\n?\\(?:\w+ (?:\\\w+ )?=|[\w\{\}\|])+[\n\\\w\d \&\{\}]+?\\end[\{\}\w]*\n?))\n?\\(?:\]|\))/g, "\$\$ $1$2 \$\$");
     },
     latexEnabled() {
       return this.renderer === 'latex';
