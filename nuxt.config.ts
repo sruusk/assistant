@@ -109,6 +109,9 @@ export default defineNuxtConfig({
     },
     remarkPlugins:  {
       'remark-math': {},
+    },
+    headings: {
+      anchorLinks: false
     }
   },
 })

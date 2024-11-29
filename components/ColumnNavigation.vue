@@ -119,8 +119,7 @@
       </div>
       <template #footer>
         <div class="flex flex-row items-center justify-start gap-3">
-          <USkeleton class="h-8 w-8 rounded-full" />
-          <a href="/logout">{{ $t('logout') }}</a>
+          <UButton icon="material-symbols:logout" @click="logout" color="error" variant="outline" :label="$t('logout')"/>
         </div>
       </template>
     </UCard>
@@ -128,16 +127,7 @@
 </template>
 
 <script lang="ts">
-
 import LabeledSlider from "~/components/LabeledSlider.vue";
-const newAssistant = {
-  id: null,
-  name: '',
-  instructions: '',
-  model: 'gpt-4o-mini',
-  temperature: 1.0,
-  top_p: 1.0,
-};
 
 export default defineNuxtComponent({
   name: "ColumnNavigation",
@@ -168,7 +158,7 @@ export default defineNuxtComponent({
     }
   },
   mounted() {
-    this.selectedAssistant = this.userStore.activeAssistant ?? structuredClone(newAssistant);
+    this.selectedAssistant = this.userStore.activeAssistant ?? this.createNewAssistantObject();
   },
   computed: {
     assistants() {
@@ -181,13 +171,13 @@ export default defineNuxtComponent({
       set(value: string) {
         this.userStore.changeAssistant(value);
       }
-    }
+    },
   },
   watch: {
     selectedAssistantId: {
       handler: async function (value) {
         if (!value) {
-          this.selectedAssistant = structuredClone(newAssistant);
+          this.selectedAssistant = this.createNewAssistantObject();
         } else {
           this.selectedAssistant = this.userStore.activeAssistant;
         }
@@ -309,7 +299,24 @@ export default defineNuxtComponent({
       await this.userStore.getAssistants();
       this.selectedAssistantId = this.userStore.assistants?.[0]?.id ?? null;
       this.deleting = false;
-    }
+    },
+    createNewAssistantObject() {
+      return {
+        id: null,
+        name: this.$t('dashboard.defaultName'),
+        instructions: this.$t('dashboard.defaultInstructions'),
+        model: 'gpt-4o-mini',
+        temperature: 1.0,
+        top_p: 1.0,
+      };
+    },
+    async logout() {
+      if(!await this.confirm.confirm({
+        title: this.$t('dialog.confirmLogout'),
+        confirmButtonText: 'dialog.logout',
+      })) return;
+      window.location.href = '/logout';
+    },
   }
 });
 </script>

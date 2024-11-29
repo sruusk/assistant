@@ -1,7 +1,22 @@
 <template>
   <UCard class="h-full flex flex-col" :ui="{ body: 'grow overflow-y-hidden' }">
     <div class="flex flex-col-reverse items-center justify-start h-full overflow-y-auto gap-5 px-2">
-      <USeparator v-if="userStore.activeAssistantId && !messageStore.loading && !messageStore.messages?.length" orientation="horizontal" class="w-full">{{ $t('dashboard.noMessages') }}</USeparator>
+      <ClientOnly>
+        <UAlert v-if="userStore.noAssistants"
+                :title="$t('dashboard.noAssistants')"
+                :description="$t('dashboard.noAssistantsDescription')"
+                color="warning"
+                variant="subtle"
+                icon="material-symbols:warning"
+        />
+      </ClientOnly>
+
+      <USeparator v-if="userStore.activeAssistantId && !messageStore.loading && !messageStore.messages?.length"
+                  orientation="horizontal"
+                  class="w-full"
+      >
+        {{ $t('dashboard.noMessages') }}
+      </USeparator>
 
       <template v-if="messageStore.stream">
         <ChatBubble :stream="messageStore.stream"/>

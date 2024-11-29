@@ -3,7 +3,7 @@ import { createSharedComposable } from '@vueuse/core';
 
 interface ConfirmOptions {
   title: string;
-  description: string;
+  description?: string;
   confirmButtonText?: string;
   cancelButtonText?: string;
   confirmButtonVariant?: ButtonVariant;
@@ -29,7 +29,7 @@ const useConfirmComposable = () => {
 
   const confirm = (options: ConfirmOptions) => {
     title.value = options.title;
-    description.value = options.description;
+    description.value = options.description || '';
     confirmButtonText.value = options.confirmButtonText || 'dialog.confirm';
     cancelButtonText.value = options.cancelButtonText || 'dialog.cancel';
     confirmButtonVariant.value = options.confirmButtonVariant || 'solid';

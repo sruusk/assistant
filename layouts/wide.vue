@@ -9,7 +9,7 @@
 
 <script lang="ts">
 export default defineNuxtComponent({
-  name: "wide.vue"
+  name: "wide"
 });
 </script>
 

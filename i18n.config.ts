@@ -16,6 +16,8 @@ export default defineI18nConfig(() => ({
         upload: 'Upload files',
         save: 'Save',
         newAssistant: 'New Assistant',
+        defaultName: 'Assistant',
+        defaultInstructions: 'You are a helpful assistant that can answer questions and help with tasks.',
         missingFields: 'Missing fields, name and instructions are required',
         message: 'Message',
         messagePlaceholder: 'Type your message',
@@ -50,6 +52,8 @@ export default defineI18nConfig(() => ({
         delete: 'Delete',
         confirmDelete: 'Confirm delete',
         deleteItem: 'Are you sure you want to delete {item}?',
+        confirmLogout: 'Are you sure you want to logout?',
+        logout: 'Logout',
       }
     }
   }

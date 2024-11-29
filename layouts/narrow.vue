@@ -21,7 +21,7 @@
 
 <script lang="ts">
 export default defineNuxtComponent({
-  name: "mobile",
+  name: "narrow",
   data() {
     return {
       open: false,
@@ -36,13 +36,21 @@ export default defineNuxtComponent({
   watch: {
     'userStore.noAssistants': {
       handler() {
-        if(this.userStore.noAssistants) {
-          this.open = true;
-          this.toast.add({
-            title: this.$t('dashboard.noAssistants'),
-            description: this.$t('dashboard.noAssistantsDescription'),
-          })
-        }
+        this.handleNoAssistant();
+      }
+    }
+  },
+  created() {
+    this.handleNoAssistant();
+  },
+  methods: {
+    handleNoAssistant() {
+      if(this.userStore.noAssistants) {
+        this.open = true;
+        this.toast.add({
+          title: this.$t('dashboard.noAssistants'),
+          description: this.$t('dashboard.noAssistantsDescription'),
+        })
       }
     }
   }
