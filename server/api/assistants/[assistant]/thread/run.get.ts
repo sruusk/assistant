@@ -10,7 +10,14 @@ export default defineAssistantAuthenticatedHandler(async (event) => {
     async start(controller) {
       const oaiStream = await event.context.openai.beta.threads.runs.create(
         thread,
-        { assistant_id: assistant, stream: true }
+        {
+          assistant_id: assistant,
+          stream: true,
+          truncation_strategy: {
+            type: 'last_messages',
+            last_messages: 20, // Limit the context to the last 20 messages
+          }
+        }
       );
 
       for await (const event of oaiStream) {
