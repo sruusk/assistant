@@ -6,6 +6,29 @@ export default defineAssistantAuthenticatedHandler(async (event) => {
     return { error: 'Thread not found' };
   }
 
+  const assistantData: { metadata?: AssistantMetadata } = await $fetch(`/assistants/${assistant}`, {
+    method: 'GET',
+    headers: getRequestHeaders(event)  as HeadersInit,
+  });
+
+  let truncation: Truncation = {};
+
+  if(assistantData.metadata) {
+    if(assistantData.metadata.max_prompt_tokens || assistantData.metadata.max_completion_tokens) {
+      assistantData.metadata.max_prompt_tokens && (truncation.max_prompt_tokens = assistantData.metadata.max_prompt_tokens);
+      assistantData.metadata.max_completion_tokens && (truncation.max_completion_tokens = assistantData.metadata.max_completion_tokens);
+    } else if(assistantData.metadata.last_messages) {
+      truncation.truncation_strategy = {
+        type: 'last_messages',
+        last_messages: assistantData.metadata.last_messages,
+      };
+    } else {
+      truncation = defaultTruncation
+    }
+  } else {
+    truncation = defaultTruncation;
+  }
+
   const stream = new ReadableStream({
     async start(controller) {
       const oaiStream = await event.context.openai.beta.threads.runs.create(
@@ -13,10 +36,7 @@ export default defineAssistantAuthenticatedHandler(async (event) => {
         {
           assistant_id: assistant,
           stream: true,
-          truncation_strategy: {
-            type: 'last_messages',
-            last_messages: 20, // Limit the context to the last 20 messages
-          }
+          ...truncation,
         }
       );
 
@@ -42,3 +62,25 @@ export default defineAssistantAuthenticatedHandler(async (event) => {
 
   return sendStream(event, stream);
 });
+
+interface Truncation {
+  truncation_strategy?: {
+    type: 'last_messages' | 'auto',
+    last_messages?: number,
+  },
+  max_prompt_tokens?: number,
+  max_completion_tokens?: number,
+}
+
+interface AssistantMetadata {
+  max_prompt_tokens?: number,
+  max_completion_tokens?: number,
+  last_messages?: number,
+}
+
+const defaultTruncation: Truncation = {
+  truncation_strategy: {
+    type: 'last_messages',
+    last_messages: 20,
+  }
+}
