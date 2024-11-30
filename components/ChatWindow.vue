@@ -104,21 +104,18 @@ export default defineNuxtComponent({
   },
   methods: {
     async sendMessage() {
+      if(this.sendingMessage) return;
       this.sendingMessage = true;
-      if(this.message.length || this.images.length || this.files.length) {
-        await this.messageStore.addMessage({
-          role: "user",
-          content: [
-            ...(this.message?.length ? [{ type: 'text', text: this.message }] : []),
-          ],
-          ...((this.images.length || this.files.length) && {
-            attachments: [
-              ...this.images.map((image) => ({ type: 'image', url: image })),
-              ...this.files,
-            ] as MessageAttachment[],
-          }),
-        });
-      }
+      await this.messageStore.addMessage({
+        role: "user",
+        content: [ { type: 'text', text: this.message } ],
+        ...((this.images.length || this.files.length) && {
+          attachments: [
+            ...this.images.map((image) => ({ type: 'image', url: image })),
+            ...this.files,
+          ] as MessageAttachment[],
+        }),
+      });
       this.message = "";
       this.images = [];
       this.files = [];
