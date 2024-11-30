@@ -4,7 +4,7 @@
           :description="description"
           prevent-close
           :close="false"
-          class="w-fit"
+          class="w-fit z-50"
   >
     <template #body>
       <div class="flex justify-center gap-5">
