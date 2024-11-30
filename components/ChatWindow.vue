@@ -172,7 +172,7 @@ export default defineNuxtComponent({
             } else {
               this.toast.add({
                 title: this.$t('dashboard.fileTypeErrorTitle'),
-                description: this.$t('dashboard.fileTypeErrorDescription', { file: file?.type || '' }),
+                description: this.$t('dashboard.fileTypeErrorDescription', { file: file?.name || '' }),
                 color: 'warning',
               });
             }
