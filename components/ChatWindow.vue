@@ -100,6 +100,7 @@ export default defineNuxtComponent({
     return {
       messageStore,
       userStore: useUserStore(),
+      toast: useToast(),
     };
   },
   methods: {
@@ -159,16 +160,21 @@ export default defineNuxtComponent({
       if (items) {
         for (const item of items) {
           if(item.kind === 'file') {
+            const file = item.getAsFile();
             if (item.type.startsWith('image/')) {
-              const file = item.getAsFile();
               if (file) {
                 this.handleImageUpload(file);
               }
             } else if(isFileTypeAccepted(item.type)) {
-              const file = item.getAsFile();
               if (file) {
                 this.handleFileUpload(file);
               }
+            } else {
+              this.toast.add({
+                title: this.$t('dashboard.fileTypeErrorTitle'),
+                description: this.$t('dashboard.fileTypeErrorDescription', { file: file?.type || '' }),
+                color: 'warning',
+              });
             }
           } else if(item.kind === 'string' && item.type === 'text/plain') {
             item.getAsString((text) => {

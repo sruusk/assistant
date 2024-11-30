@@ -39,6 +39,8 @@ export default defineI18nConfig(() => ({
         tokenLimitErrorDescription: 'The request is too large for the {model} model.\nReduce the number of tokens in the message or try a different model.',
         fileSizeErrorTitle: 'File Size Exceeded',
         fileSizeErrorDescription: 'One or more files exceed the maximum file size of {size}.',
+        fileTypeErrorTitle: 'Invalid File Type',
+        fileTypeErrorDescription: 'The file type of {file} is not supported.',
         step: {
           creating: 'Creating assistant...',
           updating: 'Updating assistant...',
