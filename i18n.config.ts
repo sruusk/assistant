@@ -29,6 +29,7 @@ export default defineI18nConfig(() => ({
         noMessages: 'No messages yet 🤔',
         temperature: 'Temperature',
         topP: 'Top P',
+        codeCopied: 'Code copied to clipboard',
         temperatureTip: 'The higher the temperature, the more creative the response. Lower temperatures are more predictable.',
         topPTip: 'The probability of sampling the next token. Lower values result in more predictable text.',
         resetConversation: 'Clear conversation',

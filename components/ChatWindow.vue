@@ -30,7 +30,10 @@
       <USkeleton v-if="messageStore.loading" class="w-full h-16" v-for="i in 5" :key="i"/>
     </div>
     <template #footer>
-      <ImagePreview v-if="images.length" :images="images" class="pb-4" @remove="(index) => images.splice(index, 1)"/>
+      <div class="flex flex-wrap gap-3">
+        <FilePreview v-if="files.length" :files="files.map(f => f.filename || 'error')" class="pb-4" @remove="(index) => files.splice(index, 1)"/>
+        <ImagePreview v-if="images.length" :images="images" class="pb-4" @remove="(index) => images.splice(index, 1)"/>
+      </div>
       <UButtonGroup v-if="userStore.activeAssistantId" class="w-full">
         <UTextarea :autoresize="true"
                    :rows="1"
@@ -40,7 +43,7 @@
                    @keydown.enter.prevent.exact="sendMessage"
                    @keydown.ctrl.enter.prevent.exact="message += '\n'"
                    @keydown.shift.enter.prevent.exact="message += '\n'"
-                   @paste="handlePaste"
+                   @paste.prevent="handlePaste"
                    v-model="message"
                    :placeholder="$t('dashboard.messagePlaceholder')"
                    :ui="{ base: ['resize-none rounded-r-none'] }"
@@ -53,7 +56,7 @@
                  color="neutral"
                  :loading="sendingMessage"
         />
-        <UDropdownMenu :items="menuItems">
+        <UDropdownMenu :items="menuItems as any">
           <UButton icon="i-lucide-menu" color="neutral" variant="outline" />
         </UDropdownMenu>
       </UButtonGroup>
@@ -63,18 +66,15 @@
 </template>
 
 <script lang="ts">
-
-import ImagePreview from "~/components/ImagePreview.vue";
-
 export default defineNuxtComponent({
   name: "ChatWindow",
-  components: {ImagePreview},
   data() {
     return {
       message: "",
       renderer: "markdown",
       sendingMessage: false,
       images: [] as string[],
+      files: [] as MessageAttachment[],
       menuItems: [
         [
           {
@@ -105,17 +105,23 @@ export default defineNuxtComponent({
   methods: {
     async sendMessage() {
       this.sendingMessage = true;
-      await this.messageStore.addMessage({
-        role: "user",
-        content: [
-          ...(this.message?.length ? [{ type: 'text', text: this.message }] : []),
-        ],
-        ...(this.images.length && {
-          attachments: this.images.map((image) => ({ type: 'image', url: image })),
-        }),
-      });
+      if(this.message.length || this.images.length || this.files.length) {
+        await this.messageStore.addMessage({
+          role: "user",
+          content: [
+            ...(this.message?.length ? [{ type: 'text', text: this.message }] : []),
+          ],
+          ...((this.images.length || this.files.length) && {
+            attachments: [
+              ...this.images.map((image) => ({ type: 'image', url: image })),
+              ...this.files,
+            ] as MessageAttachment[],
+          }),
+        });
+      }
       this.message = "";
       this.images = [];
+      this.files = [];
       await this.messageStore.runThread();
       this.sendingMessage = false;
     },
@@ -136,15 +142,41 @@ export default defineNuxtComponent({
       };
       reader.readAsDataURL(file);
     },
+    handleFileUpload(file: File) {
+      if(!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        console.log(file.name);
+        this.files.push({
+          type: 'file',
+          filename: file.name,
+          mimeType: file.type,
+          url: e.target?.result as string,
+        })
+      };
+      reader.readAsDataURL(file);
+    },
     handlePaste(event: ClipboardEvent) {
       const items = event.clipboardData?.items;
       if (items) {
         for (const item of items) {
-          if (item.type.startsWith('image/')) {
-            const file = item.getAsFile();
-            if (file) {
-              this.handleImageUpload(file);
+          if(item.kind === 'file') {
+            if (item.type.startsWith('image/')) {
+              const file = item.getAsFile();
+              if (file) {
+                this.handleImageUpload(file);
+              }
+            } else if(isFileTypeAccepted(item.type)) {
+              const file = item.getAsFile();
+              if (file) {
+                this.handleFileUpload(file);
+              }
             }
+          } else if(item.kind === 'string' && item.type === 'text/plain') {
+            item.getAsString((text) => {
+              this.message += text;
+            });
           }
         }
       }

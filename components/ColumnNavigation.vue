@@ -280,7 +280,7 @@ export default defineNuxtComponent({
       await $fetch(`/api/store/${vectorStoreId}/${fileId}`, {
         method: 'DELETE',
       });
-      this.userStore.getAssistantFiles(assistantId);
+      await this.userStore.getAssistantFiles(assistantId);
     },
     async deleteAssistant() {
       if(!this.selectedAssistant?.id) return;

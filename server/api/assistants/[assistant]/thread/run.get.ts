@@ -6,7 +6,7 @@ export default defineAssistantAuthenticatedHandler(async (event) => {
     return { error: 'Thread not found' };
   }
 
-  const assistantData: { metadata?: AssistantMetadata } = await $fetch(`/assistants/${assistant}`, {
+  const assistantData: { metadata?: AssistantMetadata } = await $fetch(`/api/assistants/${assistant}`, {
     method: 'GET',
     headers: getRequestHeaders(event)  as HeadersInit,
   });
@@ -70,12 +70,6 @@ interface Truncation {
   },
   max_prompt_tokens?: number,
   max_completion_tokens?: number,
-}
-
-interface AssistantMetadata {
-  max_prompt_tokens?: number,
-  max_completion_tokens?: number,
-  last_messages?: number,
 }
 
 const defaultTruncation: Truncation = {

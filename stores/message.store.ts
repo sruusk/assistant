@@ -104,29 +104,3 @@ export const useMessageStore = defineStore('message', {
   },
 });
 
-interface OutgoingMessage {
-  role: 'user' | 'assistant';
-  content: Array<{
-    type: string;
-    text: string,
-  }>;
-  attachments?: Array<{ type: string, url: string }>;
-}
-
-interface Message {
-  id?: string;
-  role: 'user' | 'assistant';
-  content: Array<{
-    type: string;
-    text: {
-      value: string;
-      annotations: Array<{
-        text: string;
-        file_citation: {
-          file_id: string;
-        };
-      }>;
-    },
-  }>;
-  attachments?: Array<{ type: string, url: string }>;
-}

@@ -1,6 +1,9 @@
 <template>
   <div>
-    <ImagePreview v-if="images?.length" :images="images" static class="pb-3"/>
+    <div class="flex flex-wrap gap-3">
+      <FilePreview v-if="files?.length" :files="files" static class="pb-3"/>
+      <ImagePreview v-if="images?.length" :images="images" static class="pb-3"/>
+    </div>
     <template v-if="markdownEnabled && messageText.length">
       <MDC :value="latexMessage" class="w-full text-wrap whitespace-break-spaces markdown grid"/>
     </template>
@@ -62,8 +65,12 @@ export default defineNuxtComponent({
       return this.renderer === 'markdown';
     },
     images(): string[] {
-      const images = this.message?.attachments?.filter((attachment: {type: string, url: string}) => attachment.type === 'image') ?? [];
-      return images.map((attachment: {type: string, url: string}) => attachment.url);
+      const images = this.message?.attachments?.filter((attachment: MessageAttachment) => attachment.type === 'image') ?? [];
+      return images.map((attachment: MessageAttachment) => attachment.url);
+    },
+    files(): string {
+      const files = this.message?.attachments?.filter((attachment: MessageAttachment) => attachment.type === 'file') ?? [];
+      return files.map((attachment: MessageAttachment) => attachment.filename);
     }
   },
   methods: {
