@@ -1,7 +1,7 @@
 <template>
   <NuxtLayout :name="layout as any">
     <DevOnly>
-      <ul v-if="Boolean(user)" class="fixed top-0 right-0 backdrop-blur-xl z-50">
+      <ul v-if="Boolean(user)" class="hidden sm:block fixed top-0 right-0 backdrop-blur-xl z-50">
         <li v-for="(value, key) in user"><b>{{ key }}:</b> {{ value }}</li>
       </ul>
     </DevOnly>
