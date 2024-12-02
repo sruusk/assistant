@@ -56,7 +56,7 @@ export default defineNuxtComponent({
   computed: {
     latexMessage() {
       return this.messageText
-        .replace(/\\(?:\[|\()\n?(?: *`? *(.+?) *`? *|(\n?\\(?:\w+ (?:\\\w+ )?=|[\w\{\}\|])+[\n\\\w\d \&\{\}]+?\\end[\{\}\w]*\n?))\n?\\(?:\]|\))/g, "\$\$ $1$2 \$\$");
+        .replace(/ {0,}\\(?:\[|\()\n?(?: *`? *(.+?) *`? *|(\n?\\(?:\w+ (?:\\\w+ )?=|[\w\{\}\|])+[\n\\\w\d \&\{\}]+?\\end[\{\}\w]*\n?))\n? {0,}\\(?:\]|\))/g, "\$\$ $1$2 \$\$");
     },
     latexEnabled() {
       return this.renderer === 'latex';
