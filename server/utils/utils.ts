@@ -39,7 +39,7 @@ const getAccessToken = async (): Promise<AccessTokenResponse> => {
     },
     body: new URLSearchParams({
       grant_type: 'client_credentials',
-      resource: `${config.logtoEndpoint}api`,
+      resource: `${config.logtoManagementEndpoint}api`,
       scope: 'all'
     }).toString()
   }) as unknown as AccessTokenResponse;

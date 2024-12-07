@@ -75,6 +75,7 @@ export default defineNuxtConfig({
     logtoAppSecret: '',
     logtoCookieEncryptionKey: '',
     logtoCustomRedirectBaseUrl: '',
+    logtoManagementEndpoint: 'https://default.logto.app/api',
     logtoM2mAppId: '',
     logtoM2mAppSecret: '',
   },
