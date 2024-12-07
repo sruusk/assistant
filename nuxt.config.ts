@@ -1,4 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import {UserScope} from "@logto/js";
+
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
@@ -60,6 +62,8 @@ export default defineNuxtConfig({
       signOut: '/logout',
       callback: '/auth/callback',
     },
+    scopes: [UserScope.CustomData, UserScope.Profile, UserScope.Roles, UserScope.Email],
+    fetchUserInfo: true,
   },
   runtimeConfig: {
     dbUrl: 'mongodb://127.0.0.1:27017',

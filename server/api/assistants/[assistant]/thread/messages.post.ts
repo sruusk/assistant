@@ -11,6 +11,8 @@ export default defineAssistantAuthenticatedHandler(async (event) => {
 
   const msg = await readBody(event);
 
+  if(msg.content?.[0]?.text?.length === 0) return;
+
   if(msg.attachments) {
     const imageFiles = await Promise.all(msg.attachments
       .filter((a: MessageAttachment) => a.type === 'image')

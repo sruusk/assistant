@@ -31,10 +31,18 @@
     </div>
     <template #footer>
       <div class="flex flex-wrap gap-3">
-        <FilePreview v-if="files.length" :files="files.map(f => f.filename || 'error')" class="pb-4" @remove="(index) => files.splice(index, 1)"/>
-        <ImagePreview v-if="images.length" :images="images" class="pb-4" @remove="(index) => images.splice(index, 1)"/>
+        <FilePreview v-if="files.length"
+                     :files="files.map(f => f.filename || 'error')"
+                     class="pb-4"
+                     @remove="(index) => files.splice(index, 1)"
+        />
+        <ImagePreview v-if="images.length"
+                      :images="images"
+                      class="pb-4"
+                      @remove="(index) => images.splice(index, 1)"
+        />
       </div>
-      <UButtonGroup v-if="userStore.activeAssistantId" class="w-full">
+      <UButtonGroup v-if="userStore.activeAssistantId" class="w-full h-min">
         <UTextarea :autoresize="true"
                    :rows="1"
                    :maxrows="6"
@@ -109,7 +117,10 @@ export default defineNuxtComponent({
       this.sendingMessage = true;
       await this.messageStore.addMessage({
         role: "user",
-        content: [ { type: 'text', text: this.message } ],
+        content: [{
+          type: 'text',
+          text: this.message,
+        }],
         ...((this.images.length || this.files.length) && {
           attachments: [
             ...this.images.map((image) => ({ type: 'image', url: image })),
@@ -190,7 +201,7 @@ export default defineNuxtComponent({
       this.menuItems[0].forEach((item) => {
         item.checked = item.val === this.renderer;
       });
-    }
+    },
   },
 });
 </script>

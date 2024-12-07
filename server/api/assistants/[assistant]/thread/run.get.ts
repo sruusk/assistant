@@ -41,7 +41,6 @@ export default defineAssistantAuthenticatedHandler(async (event) => {
       );
 
       for await (const event of oaiStream) {
-        console.log('Received event', event);
         if(event.event === 'thread.message.delta') {
           controller.enqueue(event.data.delta.content[0].text.value);
         } else if(event.event === 'thread.run.failed') {
@@ -54,7 +53,13 @@ export default defineAssistantAuthenticatedHandler(async (event) => {
             controller.enqueue(`TOKEN_LIMIT|${gptVersion}|`);
           }
           console.error('Thread run failed:', errorMsg);
-        }
+        } else if(event.event === 'thread.run.completed') {
+          const usage = event.data.usage;
+          console.log(`Run completed, used:
+          \r- Prompt tokens: ${usage.prompt_tokens}
+          \r- Completion tokens: ${usage.completion_tokens}
+          \r- Total tokens: ${usage.total_tokens}`);
+        } else console.log('Received event', event);
       }
       controller.close();
     }

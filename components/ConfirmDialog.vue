@@ -4,6 +4,7 @@
           :description="description"
           prevent-close
           :close="false"
+          :overlay="true"
           class="w-max sm:w-fit max-w-[90%] rounded-xl h-fit z-50"
   >
     <template #body>

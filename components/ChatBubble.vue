@@ -124,7 +124,7 @@ export default defineNuxtComponent({
     stream: {
       handler() {
         if(this.streaming) return;
-        this.fetchStream();
+        this.$nextTick(() => this.fetchStream());
       },
       immediate: true,
     },
