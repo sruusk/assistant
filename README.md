@@ -1,75 +1,24 @@
-# Nuxt Minimal Starter
+# Assistant
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+### What?
+It's a powerful wrapper around OpenAI's Assistants API.
+Designed to be easy to use and to provide as much functionality as possible.
 
-## Setup
+### Why?
+It allows for easy use of the Assistants API without subscriptions, only paying for what you use.
 
-Make sure to install dependencies:
+### Features
+- Easy to use
+- No subscriptions
+- Pay for what you use
+- User authentication via LogTo
 
-```bash
-# npm
-npm install
+### Tech Stack
+- Nuxt.js
+- NuxtUI 3
+- TailwindCSS
+- OpenAI API
+- LogTo
 
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+### Screenshot
+![image](/screenshot.jpeg)
