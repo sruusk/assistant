@@ -1,5 +1,7 @@
 # Assistant
 
+![image](/screenshot.jpeg)
+
 ### What?
 It's a powerful wrapper around OpenAI's Assistants API.
 Designed to be easy to use and to provide as much functionality as possible.
@@ -19,6 +21,3 @@ It allows for easy use of the Assistants API without subscriptions, only paying 
 - TailwindCSS
 - OpenAI API
 - LogTo
-
-### Screenshot
-![image](/screenshot.jpeg)
