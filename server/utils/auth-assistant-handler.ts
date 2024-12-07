@@ -16,11 +16,16 @@ export const defineAssistantAuthenticatedHandler = <T extends EventHandlerReques
       return { error: 'Assistant not found' };
     }
 
-    const userAssistants = await event.context.storage.getItem(`user:${user.sub}:assistants`) || [];
+    const userAssistants = Object.keys(user.custom_data?.assistants || {});
     if (!userAssistants.includes(assistant)) {
       setResponseStatus(event, 403);
       return { error: 'Forbidden' };
     }
+
+    event.context.user = user;
+    event.context.assistant = assistant;
+    event.context.assistants = userAssistants;
+    event.context.assistantThread = user.custom_data.assistants?.[assistant]?.thread;
 
     try {
       // Call the actual handler

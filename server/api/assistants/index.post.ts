@@ -3,10 +3,9 @@ export default defineAuthenticatedHandler(async (event) => {
 
   const newAssistant = await event.context.openai.beta.assistants.create(body);
 
-  const userAssistants = await event.context.storage.getItem(`user:${event.context.logtoUser.sub}:assistants`) || [];
-  userAssistants.push(newAssistant.id);
-  console.log(userAssistants);
-  await event.context.storage.setItem(`user:${event.context.logtoUser.sub}:assistants`, userAssistants);
+  const userAssistants = event.context.user.custom_data?.assistants || {};
+  userAssistants[newAssistant.id] = {};
+  await updateLogtoCustomData(event, {assistants: userAssistants});
 
   return newAssistant;
 });

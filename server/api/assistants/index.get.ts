@@ -3,7 +3,5 @@ export default defineAuthenticatedHandler(async (event) => {
   // const assistants = await event.context.openai.beta.assistants.list();
   // return assistants.data.map((asst: any) => asst.id);
 
-  const data = await event.context.storage.getItem(`user:${event.context.logtoUser.sub}:assistants`);
-
-  return data || [];
+  return event.context.assistants || [] as string[];
 });

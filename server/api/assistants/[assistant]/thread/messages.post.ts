@@ -2,8 +2,7 @@ import sharp from "sharp";
 import { MessageAttachment, ImageAttachment, FileAttachment } from "~/utils/types";
 
 export default defineAssistantAuthenticatedHandler(async (event) => {
-  const assistant = getRouterParam(event, 'assistant');
-  const thread = await event.context.storage.getItem(`user:${event.context.logtoUser.sub}:thread:${assistant}`);
+  const thread = event.context.assistantThread;
   if(!thread) {
     setResponseStatus(event, 409); // Conflict
     return { error: 'Thread not found' };
@@ -57,7 +56,7 @@ const scale = (image: string, targetWidth:number = 800):Promise<File> => {
       })
     )
     .catch((err) => {
-      throw new Error('Failed to scale image');
+      throw new Error('Failed to scale image', err);
     });
 };
 

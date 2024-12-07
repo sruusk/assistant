@@ -1,22 +1,9 @@
 <template>
   <NuxtLayout :name="layout as any">
     <DevOnly>
-      <ul v-if="Boolean(user)" class="hidden sm:block fixed top-0 right-0 backdrop-blur-xl z-50">
-        <li v-for="(value, key) in user">
-          <b>{{ key }}: </b>
-          <template v-if="typeof value === 'object'">
-            <ul class="pl-5">
-              <li v-for="(v, k) in value">
-                <b>{{ k }}: </b>
-                {{ v }}
-              </li>
-            </ul>
-          </template>
-          <template v-else>
-            {{ value }}
-          </template>
-        </li>
-      </ul>
+      <div v-if="Boolean(user)" class="hidden sm:block fixed top-0 right-0 backdrop-blur-xl z-50">
+         <pre>{{ JSON.stringify(user, null, 2) }}</pre>
+      </div>
     </DevOnly>
     <ChatWindow/>
   </NuxtLayout>

@@ -1,5 +1,5 @@
 export default defineAssistantAuthenticatedHandler(async (event) => {
-  const assistant = getRouterParam(event, 'assistant');
+  const assistant = event.context.assistant;
 
   const thread = await $fetch(`/api/assistants/${assistant}/thread`, {
     method: 'DELETE',
@@ -17,12 +17,9 @@ export default defineAssistantAuthenticatedHandler(async (event) => {
     });
     await event.context.openai.beta.assistants.del(assistant);
 
-    const userAssistants = await event.context.storage.getItem(`user:${event.context.logtoUser.sub}:assistants`) || [];
-    const index = userAssistants.indexOf(assistant);
-    if(index !== -1) {
-      userAssistants.splice(index, 1);
-      await event.context.storage.setItem(`user:${event.context.logtoUser.sub}:assistants`, userAssistants);
-    }
+    delete event.context.user.custom_data.assistants[assistant];
+    await updateLogtoCustomData(event, { assistants: event.context.user.custom_data.assistants });
+
     console.log('Deleted assistant:', assistant);
   } catch(e) {
     console.error('Failed to delete vector store', e);

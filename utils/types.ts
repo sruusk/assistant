@@ -37,6 +37,9 @@ export interface Message {
         };
       }>;
     },
+    image_file?: {
+      file_id: string;
+    }
   }>;
   attachments?: Array<MessageAttachment>;
 }

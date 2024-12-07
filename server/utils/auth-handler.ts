@@ -10,6 +10,9 @@ export const defineAuthenticatedHandler = <T extends EventHandlerRequest, D>(
       return { error: 'Unauthorized' };
     }
 
+    event.context.user = user;
+    event.context.assistants = Object.keys(user.custom_data?.assistants || {});
+
     try {
       // Call the actual handler
       return await handler(event);

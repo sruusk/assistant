@@ -1,23 +1,26 @@
 export default defineAssistantAuthenticatedHandler(async (event) => {
-  const assistant = getRouterParam(event, 'assistant');
-  const userThread = await event.context.storage.getItem(`user:${event.context.logtoUser.sub}:thread:${assistant}`);
+  const assistant = event.context.assistant;
+  const userThread = event.context.assistantThread;
 
   if(userThread) {
     // Delete all attached file first
-    const messages: any[] = await $fetch(`/api/assistants/${assistant}/thread/messages`, {
+    const messages = await $fetch(`/api/assistants/${assistant}/thread/messages`, {
       method: 'GET',
       headers: getRequestHeaders(event) as HeadersInit,
     });
+    if(!Array.isArray(messages)) return messages;
     const files = [
       ...messages
         .map((m) => m.content)
         .flat()
         .filter((c) => c.type === 'image_file')
-        .map((c) => c.image_file.file_id),
+        .map((c) => c.image_file?.file_id),
       ...messages
         .map((m) => m.attachments)
         .flat()
+        // @ts-ignore
         .filter((a) => a.type === 'file')
+        // @ts-ignore
         .map((a) => a.file_id),
     ];
 
@@ -31,6 +34,7 @@ export default defineAssistantAuthenticatedHandler(async (event) => {
 
     const response = await event.context.openai.beta.threads.del(userThread);
     console.log('Deleted thread', userThread, response);
+
     return response;
   }
   else {

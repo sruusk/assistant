@@ -1,9 +1,7 @@
 import type {Thread} from "~/node_modules/openai/resources/beta";
 
 export default defineAssistantAuthenticatedHandler(async (event): Promise<Thread> => {
-  const assistant = getRouterParam(event, 'assistant');
-
-  const userThread = await event.context.storage.getItem(`user:${event.context.logtoUser.sub}:thread:${assistant}`);
+  const userThread = event.context.assistantThread;
 
   if(userThread) {
     try {
@@ -17,7 +15,10 @@ export default defineAssistantAuthenticatedHandler(async (event): Promise<Thread
 
   const newThread = await event.context.openai.beta.threads.create();
   console.log('Created thread:', newThread);
-  await event.context.storage.setItem(`user:${event.context.logtoUser.sub}:thread:${assistant}`, newThread.id);
+
+  const userAssistants = event.context.user.custom_data?.assistants || {};
+  userAssistants[event.context.assistant].thread = newThread.id;
+  await updateLogtoCustomData(event, {assistants: userAssistants});
 
   return newThread as Thread;
 });

@@ -69,22 +69,14 @@ export default defineNuxtConfig({
     dbUrl: 'mongodb://127.0.0.1:27017',
     dbName: 'assistant',
     openAiKey: '',
-  },
-  nitro: {
-    storage: {
-      db: {
-        driver: 'mongodb',
-        connectionString: process.env.DB_URL,
-        databaseName: 'assistant',
-        collectionName: 'nitro',
-      }
-    },
-    devStorage: {
-      db: {
-        driver: 'fs',
-        base: './.storage',
-      }
-    }
+    logtoEndpoint: '',
+    logtoAppId: '',
+    logtoClientId: '',
+    logtoAppSecret: '',
+    logtoCookieEncryptionKey: '',
+    logtoCustomRedirectBaseUrl: '',
+    logtoM2mAppId: '',
+    logtoM2mAppSecret: '',
   },
   mdc: {
     highlight: {
