@@ -4,7 +4,7 @@
       <FilePreview v-if="files?.length" :files="files" static class="pb-3"/>
       <ImagePreview v-if="images?.length" :images="images" static class="pb-3"/>
     </div>
-    <template v-if="markdownEnabled && messageText.length">
+    <template v-if="markdownEnabled && latexMessage.length">
       <MDC :value="latexMessage" class="w-full text-wrap whitespace-break-spaces markdown grid"/>
     </template>
     <template v-else v-for="line in messageText.split('\n')" :key="line">
@@ -56,7 +56,7 @@ export default defineNuxtComponent({
   computed: {
     latexMessage() {
       return this.messageText
-        .replace(/ {0,}\\(?:\[|\()\n?(?: *`? *(.+?) *`? *|(\n?\\(?:\w+ (?:\\\w+ )?=|[\w\{\}\|])+[\n\\\w\d \&\{\}]+?\\end[\{\}\w]*\n?))\n? {0,}\\(?:\]|\))/g, "\$\$ $1$2 \$\$");
+        .replace(/\\[\[(]\n?(?: *`? *((?:.|\n)+?) *`? *)\n? *\\[\])]/g, "\$\$ $1 \$\$");
     },
     latexEnabled() {
       return this.renderer === 'latex';
@@ -68,7 +68,7 @@ export default defineNuxtComponent({
       const images = this.message?.attachments?.filter((attachment: MessageAttachment) => attachment.type === 'image') ?? [];
       return images.map((attachment: MessageAttachment) => attachment.url);
     },
-    files(): string {
+    files(): string[] {
       const files = this.message?.attachments?.filter((attachment: MessageAttachment) => attachment.type === 'file') ?? [];
       return files.map((attachment: MessageAttachment) => attachment.filename);
     }
