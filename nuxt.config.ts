@@ -66,8 +66,6 @@ export default defineNuxtConfig({
     fetchUserInfo: true,
   },
   runtimeConfig: {
-    dbUrl: 'mongodb://127.0.0.1:27017',
-    dbName: 'assistant',
     openAiKey: '',
     logtoEndpoint: '',
     logtoAppId: '',
@@ -82,7 +80,11 @@ export default defineNuxtConfig({
   mdc: {
     highlight: {
       theme: 'github-dark',
-      langs: ['js','jsx','json','ts','tsx','vue','css','html','bash','md','mdc','yaml', 'asm', 'latex', 'c', 'c++', 'c#'],
+      langs: [
+        'js','jsx','json', 'java', 'python', 'py', 'jsx',
+        'scala','ts','tsx','vue','css','html','bash','md',
+        'mdc','yaml', 'asm', 'latex', 'c', 'c++', 'c#'
+      ],
       wrapperStyle: true
     },
     components: {

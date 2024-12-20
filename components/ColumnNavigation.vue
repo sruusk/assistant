@@ -55,9 +55,9 @@
               <UButtonGroup v-if="userStore.activeAssistantFiles.length"
                             v-for="(file, index) in userStore.activeAssistantFiles"
                             :key="file.id"
-                            class="flex flex-row items-center justify-between w-full border-b border-[var(--ui-border)] last:border-b-0"
+                            class="relative flex flex-row items-center justify-between w-full border-b border-[var(--ui-border)] last:border-b-0"
               >
-                <div class="flex flex-row items-center gap-2 text-sm py-1">
+                <div class="flex flex-row items-center gap-2 text-sm py-1 overflow-hidden whitespace-nowrap">
                   <span>{{ file.filename }}</span>
                 </div>
                 <UButton icon="material-symbols:delete-rounded"
@@ -232,6 +232,7 @@ export default defineNuxtComponent({
         this.selectedAssistantId = assistant.id;
         await this.userStore.getAssistantFiles(assistant.id);
         this.fileInput?.value && (this.fileInput.value = '');
+        this.files = [];
         this.saving = false;
         this.saveStep = 0;
       } catch (e) {
