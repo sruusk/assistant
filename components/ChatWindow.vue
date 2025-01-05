@@ -1,6 +1,7 @@
 <template>
-  <UCard class="h-full flex flex-col" :ui="{ body: 'grow overflow-y-hidden' }">
+  <UCard class="h-full flex flex-col" :ui="{ body: 'grow overflow-y-hidden !py-0' }">
     <div class="flex flex-col-reverse items-center justify-start h-full overflow-y-auto gap-5 px-2">
+      <div class="min-h-2"/>
       <ClientOnly>
         <UAlert v-if="userStore.noAssistants"
                 :title="$t('dashboard.noAssistants')"
@@ -28,6 +29,7 @@
         <USeparator orientation="horizontal" class="w-full capitalize">{{ message.role }}</USeparator>
       </template>
       <USkeleton v-if="messageStore.loading" class="w-full h-16" v-for="i in 5" :key="i"/>
+      <div class="min-h-12"/>
     </div>
     <template #footer>
       <div class="flex flex-wrap gap-3">

@@ -4,14 +4,7 @@ import {UserScope} from "@logto/js";
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
-  modules: [
-    '@nuxt/ui',
-    '@nuxtjs/i18n',
-    '@pinia/nuxt',
-    '@logto/nuxt',
-    'nuxt-umami',
-    '@nuxtjs/mdc'
-  ],
+  modules: ['@nuxt/ui', '@nuxtjs/i18n', '@pinia/nuxt', '@logto/nuxt', '@nuxtjs/mdc', '@vite-pwa/nuxt'],
   css: ['~/assets/css/main.css'],
   vue: {
     compilerOptions: {
@@ -36,14 +29,44 @@ export default defineNuxtConfig({
   pinia: {
     storesDirs: ['./stores/**'],
   },
-  umami: {
-    id: '',
-    host: 'https://umami.anttila.io',
-    autoTrack: true,
-    ignoreLocalhost: true,
-    excludeQueryParams: true,
-    trailingSlash: 'never',
-    enabled: false
+  pwa: {
+    registerType: 'autoUpdate',
+    manifest: {
+      name: 'Assistant',
+      short_name: 'Assistant',
+      description: 'Your personal assistant',
+      theme_color: '#ffffff',
+      lang: 'en',
+      icons: [
+        {
+          "src": "pwa-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "any"
+        },
+        {
+          "src": "pwa-512x512.png",
+          "sizes": "512x512",
+          "type": "image/png",
+          "purpose": "any"
+        },
+        {
+          "src": "pwa-maskable-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "maskable"
+        },
+        {
+          "src": "pwa-maskable-512x512.png",
+          "sizes": "512x512",
+          "type": "image/png",
+          "purpose": "maskable"
+        }
+      ],
+    },
+    client: {
+      installPrompt: true,
+    }
   },
   i18n: {
     vueI18n: './i18n.config.ts',

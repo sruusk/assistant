@@ -3,7 +3,7 @@
 <!--    <UButton icon="i-lucide-code" color="neutral" variant="outline" @click="copyCode" class="absolute top-0 right-0 m-2"/>-->
 <!--    <slot/>-->
 <!--  </pre>-->
-  <div v-if="code.length" class="pre relative w-full contain-content grid">
+  <div v-if="code.length" class="pre relative w-full contain-content grid mt-1 mb-3">
     <UButton icon="i-lucide-code" color="neutral" variant="outline" @click="copyCode" class="absolute top-0 right-0 m-2"/>
     <pre class="pre-body rounded-2xl px-5 py-3 w-full overflow-x-auto" :class="$props.class"><slot/></pre>
   </div>
