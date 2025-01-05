@@ -104,9 +104,9 @@ export default defineNuxtConfig({
     highlight: {
       theme: 'github-dark',
       langs: [
-        'js','jsx','json', 'java', 'python', 'py', 'jsx',
-        'scala','ts','tsx','vue','css','html','bash','md',
-        'mdc','yaml', 'asm', 'latex', 'c', 'c++', 'c#'
+        'js','jsx','json', 'java', 'python', 'py', 'kotlin', 'lua', 'make', 'matlab', 'css',
+        'scala','ts','tsx','vue','css','html','bash','md', 'cmake', 'dockerfile', 'go',
+        'mdc','yaml', 'asm', 'latex', 'c', 'c++', 'c#', 'http', 'dart'
       ],
       wrapperStyle: true
     },
