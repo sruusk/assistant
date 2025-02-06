@@ -14,7 +14,7 @@
     "@logto/nuxt": "^1.2.0",
     "@nuxt/ui": "^3.0.0-alpha.10",
     "@nuxtjs/i18n": "^9.1.1",
-    "@nuxtjs/mdc": "^0.9.5",
+    "@nuxtjs/mdc": "^0.13.3",
     "@pinia/nuxt": "^0.7.0",
     "@vite-pwa/nuxt": "^0.10.6",
     "mongodb": "^6.12.0",
