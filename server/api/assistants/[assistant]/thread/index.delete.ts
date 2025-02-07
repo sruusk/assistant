@@ -4,10 +4,7 @@ export default defineAssistantAuthenticatedHandler(async (event) => {
 
   if(userThread) {
     // Delete all attached file first
-    const messages = await $fetch(`/api/assistants/${assistant}/thread/messages`, {
-      method: 'GET',
-      headers: getRequestHeaders(event) as HeadersInit,
-    });
+    const messages = await event.$fetch(`/api/assistants/${assistant}/thread/messages`, { method: 'GET' });
     if(!Array.isArray(messages)) return messages;
     const files = [
       ...messages
