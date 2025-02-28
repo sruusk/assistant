@@ -136,6 +136,7 @@ export default defineNuxtComponent({
     return {
       selectedAssistant: undefined as any,
       availableModels: [
+        'gpt-4.5-preview',
         'gpt-4o',
         'gpt-4o-mini',
         'gpt-4-turbo',
