@@ -138,6 +138,8 @@ export default defineNuxtComponent({
       availableModels: [
         'gpt-4.5-preview',
         'gpt-4o',
+        'o1',
+        'o3-mini',
         'gpt-4o-mini',
         'gpt-4-turbo',
         'gpt-4',
