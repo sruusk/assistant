@@ -187,6 +187,17 @@ export default defineNuxtComponent({
       },
       deep: true
     },
+    'selectedAssistant.model': {
+      handler: function (value) {
+        if (value === 'o1' || value === 'o3-mini') {
+          if(!this.selectedAssistant.reasoning_effort)
+            this.selectedAssistant.reasoning_effort = 'medium';
+        } else if(Boolean(value)) {
+          delete this.selectedAssistant.reasoning_effort;
+        }
+      },
+      immediate: true,
+    },
   },
   methods: {
     async saveAssistant() {

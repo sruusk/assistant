@@ -145,6 +145,14 @@ export default defineNuxtComponent({
     handleImageUpload(file: File) {
       if(!file) return;
 
+      if(this.userStore.activeAssistant.reasoning_effort) {
+        return this.toast.add({
+          title: this.$t('dashboard.imageReasoningErrorTitle'),
+          description: this.$t('dashboard.imageReasoningErrorDescription', { model: this.userStore.activeAssistant.model }),
+          color: 'warning',
+        });
+      }
+
       const reader = new FileReader();
       reader.onload = (e) => {
         this.images.push(e.target?.result as string);

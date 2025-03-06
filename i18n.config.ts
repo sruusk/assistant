@@ -37,6 +37,8 @@ export default defineI18nConfig(() => ({
         latex: 'LaTeX parser',
         tokenLimitErrorTitle: 'Token Limit Exceeded',
         tokenLimitErrorDescription: 'The request is too large for the {model} model.\nReduce the number of tokens in the message or try a different model.',
+        imageReasoningErrorTitle: 'Reasoning models do not support images',
+        imageReasoningErrorDescription: 'The {model} model does not support images. Please use a different model.',
         fileSizeErrorTitle: 'File Size Exceeded',
         fileSizeErrorDescription: 'One or more files exceed the maximum file size of {size}.',
         fileTypeErrorTitle: 'Invalid File Type',
