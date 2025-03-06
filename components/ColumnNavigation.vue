@@ -76,16 +76,28 @@
 
           <div class="w-full relative p-3 ring ring-inset ring-[var(--ui-border-accented)] rounded-[calc(var(--ui-radius)*1.5)]">
             <OptionLabel :text="$t('dashboard.modelConfig')"/>
-            <LabeledSlider :tooltip="$t('dashboard.temperatureTip')"
-                           :label="$t('dashboard.temperature')"
-                           v-model:value="selectedAssistant.temperature"
-                           :max="2.0"
+            <LabeledSlider
+              v-if="selectedAssistant.temperature && !selectedAssistant.reasoning_effort"
+              :tooltip="$t('dashboard.temperatureTip')"
+              :label="$t('dashboard.temperature')"
+              v-model:value="selectedAssistant.temperature"
+              :max="2.0"
             />
-            <LabeledSlider :tooltip="$t('dashboard.topPTip')"
-                           :label="$t('dashboard.topP')"
-                           v-model:value="selectedAssistant.top_p"
-                           ui="mt-5"
+            <LabeledSlider
+              v-if="selectedAssistant.top_p && !selectedAssistant.reasoning_effort"
+              :tooltip="$t('dashboard.topPTip')"
+              :label="$t('dashboard.topP')"
+              v-model:value="selectedAssistant.top_p"
+              ui="mt-5"
             />
+            <USelect
+              v-if="selectedAssistant.reasoning_effort"
+              :items="['low', 'medium', 'high']"
+              v-model="selectedAssistant.reasoning_effort"
+              class="w-full mt-1"
+            >
+              {{ $t('dashboard.reasoningEffort') }} - {{ selectedAssistant.reasoning_effort }}
+            </USelect>
           </div>
 
           <div class="grow"/>
@@ -103,7 +115,7 @@
                      @click="deleteAssistant"
                      color="error"
                      trailing-icon="material-symbols:delete-rounded"
-            ></UButton>
+            />
             <UButton :disabled="!selectedAssistant.name || !selectedAssistant.instructions || !selectedAssistant.model"
                      class="rounded-full"
                      :loading="saving"
@@ -190,10 +202,15 @@ export default defineNuxtComponent({
     'selectedAssistant.model': {
       handler: function (value) {
         if (value === 'o1' || value === 'o3-mini') {
-          if(!this.selectedAssistant.reasoning_effort)
+          if(!this.selectedAssistant.reasoning_effort) {
             this.selectedAssistant.reasoning_effort = 'medium';
+            delete this.selectedAssistant.temperature;
+            delete this.selectedAssistant.top_p;
+          }
         } else if(Boolean(value)) {
           delete this.selectedAssistant.reasoning_effort;
+          this.selectedAssistant.temperature = 1.0;
+          this.selectedAssistant.top_p = 1.0;
         }
       },
       immediate: true,
@@ -227,8 +244,9 @@ export default defineNuxtComponent({
               name: assistant.name,
               instructions: assistant.instructions,
               model: assistant.model,
-              temperature: assistant.temperature ?? 1.0,
-              top_p: assistant.top_p ?? 1.0,
+              temperature: assistant.temperature ?? null,
+              top_p: assistant.top_p ?? null,
+              reasoning_effort: assistant.reasoning_effort ?? null,
             }),
           });
         }

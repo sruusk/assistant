@@ -35,6 +35,7 @@ export default defineI18nConfig(() => ({
         resetConversation: 'Clear conversation',
         markdown: 'Markdown parser',
         latex: 'LaTeX parser',
+        reasoningEffort: 'Reasoning effort',
         tokenLimitErrorTitle: 'Token Limit Exceeded',
         tokenLimitErrorDescription: 'The request is too large for the {model} model.\nReduce the number of tokens in the message or try a different model.',
         imageReasoningErrorTitle: 'Reasoning models do not support images',
