@@ -91,7 +91,7 @@
               ui="mt-5"
             />
             <USelect
-              v-if="selectedAssistant.reasoning_effort"
+              v-else-if="selectedAssistant.reasoning_effort"
               :items="['low', 'medium', 'high']"
               v-model="selectedAssistant.reasoning_effort"
               class="w-full mt-1"
@@ -199,21 +199,24 @@ export default defineNuxtComponent({
       },
       deep: true
     },
-    'selectedAssistant.model': {
-      handler: function (value) {
-        if (value === 'o1' || value === 'o3-mini') {
-          if(!this.selectedAssistant.reasoning_effort) {
-            this.selectedAssistant.reasoning_effort = 'medium';
-            delete this.selectedAssistant.temperature;
-            delete this.selectedAssistant.top_p;
-          }
-        } else if(Boolean(value)) {
-          delete this.selectedAssistant.reasoning_effort;
-          this.selectedAssistant.temperature = 1.0;
-          this.selectedAssistant.top_p = 1.0;
+    'selectedAssistant.model'(value) {
+      if (value?.startsWith('o')) {
+        if(!this.selectedAssistant.reasoning_effort) {
+          this.selectedAssistant.reasoning_effort = 'medium';
+          delete this.selectedAssistant.temperature;
+          delete this.selectedAssistant.top_p;
         }
-      },
-      immediate: true,
+      } else if(Boolean(value)) {
+        delete this.selectedAssistant.reasoning_effort;
+        this.selectedAssistant.temperature = 1.0;
+        this.selectedAssistant.top_p = 1.0;
+      }
+    },
+    'selectedAssistant.reasoning_effort'(value) {
+      if (value) {
+        this.selectedAssistant.temperature = null;
+        this.selectedAssistant.top_p = null;
+      }
     },
   },
   methods: {
@@ -222,6 +225,7 @@ export default defineNuxtComponent({
       try {
         this.saving = true;
         const assistant = this.selectedAssistant;
+        console.log(assistant);
         if(assistant.id === null) { // Create new assistant
           delete assistant.id;
           const vectorStore = await this.createVectorStore();
