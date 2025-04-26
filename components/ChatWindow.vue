@@ -119,7 +119,7 @@ export default defineNuxtComponent({
         role: "user",
         content: [{
           type: 'text',
-          text: this.message,
+          text: this.message.replaceAll(`¨a`, 'ä').replaceAll(`¨o`, 'ö').replaceAll(`¨u`, 'ü'),
         }],
         ...((this.images.length || this.files.length) && {
           attachments: [
