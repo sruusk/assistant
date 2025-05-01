@@ -111,7 +111,7 @@ export default defineNuxtConfig({
       wrapperStyle: true
     },
     components: {
-      prose: false, // Add predefined map to render Prose Components instead of HTML tags, like p, ul, code
+      prose: false, // Add a predefined map to render Prose Components instead of HTML tags, like p, ul, code
       map: {
         // This map will be used in `<MDCRenderer>` to control rendered components
         pre: 'ProsePre',
@@ -120,6 +120,7 @@ export default defineNuxtConfig({
         li: 'ProseLi',
         ul: 'ProseUl',
         ol: 'ProseOl',
+        hr: 'ProseHr',
       }
     },
     rehypePlugins: {
